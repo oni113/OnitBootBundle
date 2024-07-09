@@ -1,0 +1,3 @@
+jwt:
+    expiration_time: 86400000 #1일
+    secret:

@@ -1,0 +1,63 @@
+package net.nonworkspace.demo.service;
+
+import java.util.List;
+
+import org.apache.ibatis.executor.BatchResult;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import net.nonworkspace.demo.mapper.DummyDataMapper;
+import net.nonworkspace.demo.model.DummyDataVO;
+import net.nonworkspace.demo.utils.StringUtil;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class DummyDataService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final DummyDataMapper dummyDataMapper;
+
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
+
+    public int[] createDummyDataOneMillionRowsBatchType() throws Exception {
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        DummyDataMapper batchTypeMapper = sqlSession.getMapper(DummyDataMapper.class);
+
+        DummyDataVO dummy = null;
+
+        for (int i = 0; i < 100000; i++) {
+            dummy = new DummyDataVO();
+            dummy.setStringValue(StringUtil.getRamdomStringValue(10));
+            dummy.setNumberValue((int) (Math.random() * 99999) + 1);
+            batchTypeMapper.insertDummyData(dummy);
+        }
+
+        List<BatchResult> batchResults = sqlSession.flushStatements();
+        return batchResults.get(0).getUpdateCounts();
+    }
+
+    public int createDummyDataOneMillionRowsSimpleType() throws Exception {
+        int rowCount = 0;
+
+        DummyDataVO dummy = null;
+
+        for (int i = 0; i < 100000; i++) {
+            dummy = new DummyDataVO();
+            dummy.setStringValue(StringUtil.getRamdomStringValue(10));
+            dummy.setNumberValue((int) (Math.random() * 99999) + 1);
+            rowCount += dummyDataMapper.insertDummyData(dummy);
+        }
+
+        return rowCount;
+    }
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.nonworkspace.demo.mapper.MemberMapper">
+    <select id="selectMemberList" parameterType="memberVO" resultType="memberVO">
+        SELECT M.MEMBER_ID
+             , M.NAME
+             , M.EMAIL
+             , M.CREATE_DATE
+          FROM MEMBER M
+         INNER JOIN MEMBER_PASSWORD MP
+            ON M.MEMBER_ID = MP.MEMBER_ID
+         WHERE MP.EXPIRE_DATE >= NOW()
+        <if test="name != null">
+            AND M.NAME LIKE CONCAT('%', #{name}, '%')
+        </if>
+         ORDER BY MEMBER_ID ASC
+    </select>
+    
+    <select id="findByEmail" parameterType="java.lang.String" resultType="memberVO">
+        SELECT MEMBER_ID FROM MEMBER WHERE EMAIL = #{email}
+    </select>
+    
+    <insert id="insertMember" parameterType="memberVO" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO MEMBER (
+              NAME
+            , EMAIL
+        ) VALUES (
+              #{name}
+            , #{email}
+        )
+    </insert>
+    
+    <select id="findById" parameterType="java.lang.Long" resultType="memberVO">
+        SELECT MEMBER_ID, NAME, EMAIL, CREATE_DATE FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </select>
+    
+    <update id="updateMember" parameterType="memberVO">
+        UPDATE MEMBER
+        <set>
+            <if test="name != null">
+                , NAME = #{name}
+            </if>
+        </set>
+        <where>
+            AND MEMBER_ID = #{memberId}
+        </where>
+    </update>
+    
+    <delete id="deleteMember" parameterType="java.lang.Long">
+        DELETE FROM MEMBER
+        <where>
+            AND MEMBER_ID = #{memberId}
+        </where>
+    </delete>
+    
+    <insert id="insertMemberPassword" parameterType="memberVO" useGeneratedKeys="true">
+        INSERT INTO MEMBER_PASSWORD(
+              MEMBER_ID
+            , MEMBER_PASSWORD
+            , EXPIRE_DATE
+        ) VALUES (
+              #{memberId}
+            , #{memberPassword}
+            , NOW() + INTERVAL '6 MONTH'
+        )
+    </insert>
+</mapper>

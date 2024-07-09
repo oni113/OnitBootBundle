@@ -1,0 +1,20 @@
+spring:
+    application:
+        name: demo
+    profiles:
+        include: private, sql, jwt
+    batch:
+        job:
+            names: DemoJob
+            enabled: false
+        jdbc:
+            initialize-schema: never
+
+logging.level:
+        org.springframework: debug
+        org.hibernate.SQL: debug
+        org.hibernate.type: trace
+        
+batch:
+    job:
+        schedule: 0/10 * * * * ?

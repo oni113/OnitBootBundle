@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.nonworkspace.demo.mapper.DummyDataMapper">
+    <insert id="insertDummyData" parameterType="dummyDataVO" useGeneratedKeys="true" keyProperty="dummyId">
+        INSERT INTO DUMMY_DATA(
+              STRING_VALUE
+            , NUMBER_VALUE
+        ) VALUES (
+              #{stringValue}
+            , #{numberValue}
+        )
+    </insert>
+    
+    <select id="selectDummyDataList" resultType="dummyDataVO">
+        SELECT DUMMY_ID
+             , STRING_VALUE
+             , NUMBER_VALUE
+             , CREATE_DATE
+          FROM DUMMY_DATA
+         ORDER BY DUMMY_ID ASC, CREATE_DATE ASC
+    </select>
+</mapper>
