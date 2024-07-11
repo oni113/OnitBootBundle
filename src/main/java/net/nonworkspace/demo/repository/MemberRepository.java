@@ -2,6 +2,7 @@ package net.nonworkspace.demo.repository;
 
 import java.util.List;
 import java.util.Optional;
+import net.nonworkspace.demo.domain.Role;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,10 @@ public class MemberRepository {
     public void delete(Long memberId) {
         Member member = em.find(Member.class, memberId);
         em.remove(member);
+    }
+
+    public Long saveRole(Role role) {
+        em.persist(role);
+        return role.getId();
     }
 }
