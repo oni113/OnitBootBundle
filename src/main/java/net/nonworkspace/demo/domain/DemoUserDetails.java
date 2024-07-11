@@ -2,17 +2,19 @@ package net.nonworkspace.demo.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.dto.UserInfoDto;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Builder
 @RequiredArgsConstructor
+@Slf4j
 public class DemoUserDetails implements UserDetails {
 
     private final UserInfoDto userInfoDto;
@@ -20,7 +22,11 @@ public class DemoUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        userInfoDto.getRoles().forEach(r -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getRoleName()));
+            log.debug("role added!! : {}", r.getRoleName());
+        });
+        log.debug("authorities: {}", authorities);
         return authorities;
     }
 

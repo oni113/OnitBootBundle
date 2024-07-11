@@ -1,10 +1,7 @@
 package net.nonworkspace.demo.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ import net.nonworkspace.demo.domain.embeddable.CreateInfo;
 @Data
 @Entity
 @SequenceGenerator(name = "member_id_generator", sequenceName = "member_member_id_seq",
-        initialValue = 1, allocationSize = 1)
+    initialValue = 1, allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -41,6 +40,10 @@ public class Member {
     private CreateInfo createInfo = new CreateInfo();
 
     @JsonIgnoreProperties({"member"})
-    @OneToMany(mappedBy = "member", /* cascade = CascadeType.ALL, */ fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", /* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER)
     private List<Password> passwords = new ArrayList<>();
+
+    @JsonIgnoreProperties({"member"})
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
 }

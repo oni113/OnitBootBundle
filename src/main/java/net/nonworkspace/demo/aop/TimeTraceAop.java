@@ -16,14 +16,14 @@ public class TimeTraceAop {
     @Around("execution(* net.nonworkspace..*(..))")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        logger.debug("START: " + joinPoint.toShortString());
+        // logger.debug("START: " + joinPoint.toShortString());
 
         try {
             return joinPoint.proceed();
         } finally {
             long finishTime = System.currentTimeMillis();
             long timeMs = finishTime - startTime;
-            logger.debug("END: " + joinPoint.toShortString() + " " + timeMs + "ms");
+            // logger.debug("END: " + joinPoint.toShortString() + " " + timeMs + "ms");
         }
     }
 }

@@ -188,7 +188,7 @@ public class MemberJpaServiceTest {
         member1.setPassword("Rkskekfk1!");
         member1.setRePassword("Rkskekfk1!");
         Long memberId = memberService.join(member1);
-        logger.info("memberId for delete test: " + memberId);
+        logger.info("memberId for delete test: {}", memberId);
 
         // when
         memberService.deleteMember(memberId);

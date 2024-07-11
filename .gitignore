@@ -41,6 +41,7 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+.mvn
 .mvn/wrapper/*
 
 # Package Files #
