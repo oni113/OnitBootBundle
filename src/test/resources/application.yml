@@ -3,10 +3,6 @@ spring:
         name: demo
     profiles:
         include: private, sql, jwt
-    batch:
-        job:
-            names: DemoJob
-            enabled: false
         jdbc:
             initialize-schema: never
 
@@ -16,5 +12,7 @@ logging.level:
         org.hibernate.type: trace
         
 batch:
+    scheduling:
+        enabled: false
     job:
         schedule: 0/30 * * * * *

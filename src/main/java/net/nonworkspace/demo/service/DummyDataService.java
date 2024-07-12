@@ -1,21 +1,18 @@
 package net.nonworkspace.demo.service;
 
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
+import net.nonworkspace.demo.mapper.DummyDataMapper;
+import net.nonworkspace.demo.model.DummyDataVO;
+import net.nonworkspace.demo.utils.StringUtil;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.mapper.DummyDataMapper;
-import net.nonworkspace.demo.model.DummyDataVO;
-import net.nonworkspace.demo.utils.StringUtil;
 
 @Service
 @Transactional
@@ -26,8 +23,7 @@ public class DummyDataService {
 
     private final DummyDataMapper dummyDataMapper;
 
-    @Autowired
-    private SqlSessionFactory sqlSessionFactory;
+    private final SqlSessionFactory sqlSessionFactory;
 
     public int[] createDummyDataOneMillionRowsBatchType() throws Exception {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);

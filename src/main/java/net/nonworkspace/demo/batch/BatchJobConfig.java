@@ -1,6 +1,8 @@
 package net.nonworkspace.demo.batch;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.service.DummyDataService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
@@ -15,7 +17,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class BatchJobConfig extends DefaultBatchConfiguration {
+
+    private final DummyDataService dummyDataService;
 
     @Bean
     public Job firstJob(JobRepository jobRepository,
@@ -46,6 +51,8 @@ public class BatchJobConfig extends DefaultBatchConfiguration {
     public Tasklet firstTasklet() {
         return ((contribution, chunkContent) -> {
             log.info("first tasklet execute!!");
+            // dummyDataService.createDummyDataOneMillionRowsSimpleType();
+            dummyDataService.createDummyDataOneMillionRowsBatchType();
             return RepeatStatus.FINISHED;
         });
     }
