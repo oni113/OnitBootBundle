@@ -3,8 +3,13 @@ package net.nonworkspace.demo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.List;
 import java.util.Optional;
+import net.nonworkspace.demo.domain.Member;
+import net.nonworkspace.demo.domain.dto.JoinRequestDto;
+import net.nonworkspace.demo.exception.common.CommonBizException;
+import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import net.nonworkspace.demo.domain.Member;
-import net.nonworkspace.demo.domain.dto.JoinRequestDto;
-import net.nonworkspace.demo.exception.common.CommonBizException;
-import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 
 @SpringBootTest
 @Transactional
@@ -82,7 +83,8 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(e.getMessage())
-                .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE).getMessage());
+            .isEqualTo(
+                new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE).getMessage());
     }
 
     @Test
@@ -116,7 +118,8 @@ public class MemberJpaServiceTest {
         });
 
         // then
-        assertEquals(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage(), e.getMessage());
+        assertEquals(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage(),
+            e.getMessage());
     }
 
     @Test
@@ -157,7 +160,8 @@ public class MemberJpaServiceTest {
         member2.setName("테스트2");
 
         // then
-        assertThat(member2.getName()).isEqualTo(Optional.of(memberService.editMember(member2)).get().getName());
+        assertThat(member2.getName()).isEqualTo(
+            Optional.of(memberService.editMember(member2)).get().getName());
     }
 
     @Test
@@ -175,7 +179,7 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(e.getMessage())
-                .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
+            .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
     }
 
     @Test
@@ -198,6 +202,6 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(e.getMessage())
-                .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
+            .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
     }
 }

@@ -1,17 +1,19 @@
 package net.nonworkspace.demo.service;
 
-import java.util.Map;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import io.jsonwebtoken.Jwts;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.DemoUserDetails;
 import net.nonworkspace.demo.domain.dto.LoginRequestDto;
+import net.nonworkspace.demo.domain.dto.UserInfoDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.security.jwt.JwtProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +32,7 @@ public class AuthenticationService {
         String password = dto.getPassword();
 
         DemoUserDetails userDetails =
-                (DemoUserDetails) demoUserDetailService.loadUserByUsername(email);
+            (DemoUserDetails) demoUserDetailService.loadUserByUsername(email);
         String recentPassword = userDetails.getUserInfoDto().getPassword();
         if (recentPassword == null || recentPassword.isEmpty()) {
             throw new CommonBizException(CommonBizExceptionCode.PASSWORD_EXPIRED);
@@ -54,8 +56,15 @@ public class AuthenticationService {
         return accessToken;
     }
 
-    public DemoUserDetails getUserDetailFromToken(String accessToken) {
+    public UserInfoDto getUserDetailFromToken(String accessToken) {
+        Map<String, Object> claimsFromToken = jwtProvider.getClaims(accessToken);
+        Long userId = Long.parseLong(claimsFromToken.get("userId").toString());
 
-        return null;
+        DemoUserDetails userDetails = (DemoUserDetails) Optional.ofNullable(
+                demoUserDetailService.loadUserByUserId(userId))
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
+        UserInfoDto result = userDetails.getUserInfoDto();
+        result.setPassword(null);
+        return result;
     }
 }
