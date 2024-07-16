@@ -12,6 +12,7 @@ import net.nonworkspace.demo.domain.Comment;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
+// TODO : refactoring - convert to interface extends JpaRepository
 public class BoardRepository {
 
     private final EntityManager em;
@@ -32,6 +33,7 @@ public class BoardRepository {
     }
 
     public List<Board> findAll(String title) {
+
         String query =
                 "select b from Board b where b.title like CONCAT('%', :title, '%') order by b.boardId desc";
         List<Board> result =

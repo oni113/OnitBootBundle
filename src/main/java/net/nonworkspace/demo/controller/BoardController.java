@@ -1,6 +1,13 @@
 package net.nonworkspace.demo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import net.nonworkspace.demo.domain.Board;
+import net.nonworkspace.demo.domain.Comment;
+import net.nonworkspace.demo.service.BoardService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,13 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.domain.Board;
-import net.nonworkspace.demo.domain.Comment;
-import net.nonworkspace.demo.service.BoardService;
 
 @Tag(name = "BOARD API", description = "게시판 정보를 처리하는 API 설명")
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class BoardController {
     @Operation(summary = "댓글 등록", description = "게시물의 댓글 데이터를 등록한다.")
     @PostMapping("/{boardId}/comment")
     public Long postBoard(@PathVariable(name = "boardId") Long boardId,
-            @RequestBody Comment comment) {
+        @RequestBody Comment comment) {
         return boardService.postComment(boardId, comment);
     }
 
@@ -59,10 +59,10 @@ public class BoardController {
     @Parameter(name = "commentId", description = "댓글 ID")
     @DeleteMapping("/{boardId}/comment/{commentId}")
     public int deleteComment(@PathVariable(name = "boardId", required = true) Long boardId,
-            @PathVariable(name = "commentId", required = true) Long commentId) {
+        @PathVariable(name = "commentId", required = true) Long commentId) {
         return boardService.deleteComment(boardId, commentId);
     }
-    
+
     @Operation(summary = "게시물 삭제", description = "게시물 데이터를 삭제한다.")
     @Parameter(name = "boardId", description = "게시물 ID")
     @DeleteMapping("/{boardId}")

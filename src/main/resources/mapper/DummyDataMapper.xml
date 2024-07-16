@@ -19,4 +19,27 @@
           FROM DUMMY_DATA
          ORDER BY DUMMY_ID ASC, CREATE_DATE ASC
     </select>
+
+    <select id="selectDummyDataPage" parameterType="pagingVO" resultType="dummyDataVO">
+      SELECT T.ROWNUM AS ROW_NUMBER
+           , T.DUMMY_ID
+           , T.STRING_VALUE
+           , T.NUMBER_VALUE
+           , T.CREATE_DATE
+        FROM (
+               SELECT ROW_NUMBER() OVER (ORDER BY DUMMY_ID DESC, CREATE_DATE DESC) AS ROWNUM
+                    , DUMMY_ID
+                    , STRING_VALUE
+                    , NUMBER_VALUE
+                    , CREATE_DATE
+               FROM DUMMY_DATA
+             ) T
+         LIMIT INT8(#{pageSize})
+        OFFSET INT8(#{pageNumber} - 1) * INT8(#{pageSize})
+    </select>
+
+    <select id="selectDummyDataCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS TOTAL_COUNT
+          FROM DUMMY_DATA
+    </select>
 </mapper>

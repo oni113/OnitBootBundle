@@ -15,5 +15,5 @@ public class Job {
 
     private String salary;
 
-    private Company compay;
+    private Company company;
 }

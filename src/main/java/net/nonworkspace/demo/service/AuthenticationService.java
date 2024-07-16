@@ -49,7 +49,7 @@ public class AuthenticationService {
         claims.put("email", userDetails.getUserInfoDto().getEmail());
         claims.put("name", userDetails.getUserInfoDto().getName());
 
-        String accessToken = jwtProvider.generateToken(claims, (60 * 60 * 1));
+        String accessToken = jwtProvider.generateToken(claims, (60 * 60 * 8));
         // String refreshToken = jwtProvider.generateToken(MapUtil.json.toMap(userInfo.toString()),
         // (60 * 60 * 1));
 

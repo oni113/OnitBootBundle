@@ -30,7 +30,9 @@ public class BatchScheduler {
 
         try {
             Job job = jobRegistry.getJob("firstJob");
-            JobParametersBuilder jobParams = new JobParametersBuilder().addString("time", time);
+            JobParametersBuilder jobParams = new JobParametersBuilder()
+                .addString("time", time)
+                .addString("name", "한글 파라미터 값");
             jobLauncher.run(job, jobParams.toJobParameters());
         } catch (NoSuchJobException e) {
             throw new RuntimeException(e);

@@ -1,30 +1,14 @@
 package net.nonworkspace.demo.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 
 @Configuration
 public class SpringConfig {
 
-    /*
-    private final MemberMapper memberMapper;
-    
-    private final MemberRepository memberRepository;
-
-    public SpringConfig(MemberMapper memberMapper, MemberRepository memberRepository) {
-        this.memberMapper = memberMapper;
-        this.memberRepository = memberRepository;
-    }
-    
     @Bean
-    public MemberService memberService() {
-        return new MemberService(memberMapper);
+    public PageableHandlerMethodArgumentResolverCustomizer customize() {
+        return p -> p.setOneIndexedParameters(true);
     }
-    */
-    
-    /*
-    @Bean
-    public MemberJpaService memberJpaService() {
-        return new MemberJpaService(memberRepository);
-    }
-    */
 }

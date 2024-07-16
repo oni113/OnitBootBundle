@@ -5,6 +5,11 @@ spring:
         include: private, sql, swagger, jwt
         jdbc:
             initialize-schema: never
+    data:
+        web:
+            pageable:
+                default-page-size: 10
+                one-indexed-parameters: true
 
 logging.level:
         org.springframework: debug
@@ -15,4 +20,4 @@ batch:
     scheduling:
         enabled: false
     job:
-        schedule: 0/30 * * * * ?
+        schedule: 0/15 * * * * ?

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class StringUtil {
 
-    public static String getRamdomStringValue(int length) {
+    public static String getRandomStringValue(int length) {
         Random random = new Random();
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < length; i++) {
