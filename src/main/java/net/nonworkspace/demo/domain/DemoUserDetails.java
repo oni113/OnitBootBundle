@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Slf4j
 public class DemoUserDetails implements UserDetails {
 
-    @Getter
     private final UserInfoDto userInfoDto;
 
     @Override

@@ -7,7 +7,8 @@ import net.nonworkspace.demo.batch.entity.BatchJobInstance;
 public class BatchJobInstanceDto {
 
     public BatchJobInstanceDto(BatchJobInstance batchJobInstance) {
-        this.setJobExecutionId(batchJobInstance.getBatchJobExecutions().getFirst().getId());
+        this.setJobExecutionId(
+            batchJobInstance.getBatchJobExecutions().stream().findFirst().get().getId());
         this.setJobInstanceId(batchJobInstance.getId());
         this.setVersion(batchJobInstance.getVersion());
         this.setJobName(batchJobInstance.getJobName());

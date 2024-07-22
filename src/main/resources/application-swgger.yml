@@ -7,10 +7,10 @@ springdoc:
         groups:
             enabled: true
     swagger-ui:
-        path: /
+        path: /swagger-ui.html
         disable-swagger-default-url: true
         display-request-duration: true
         groups-order: asc
-        operations-sorter: alpha
+        operations-sorter: method
     cache:
         disabled: true

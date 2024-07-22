@@ -34,8 +34,8 @@
                     , CREATE_DATE
                FROM DUMMY_DATA
              ) T
-         LIMIT INT8(#{pageSize})
-        OFFSET INT8(#{pageNumber} - 1) * INT8(#{pageSize})
+         LIMIT CAST(#{pageSize} AS INT)
+        OFFSET CAST((#{pageNumber}) AS INT) * CAST(#{pageSize} AS INT)
     </select>
 
     <select id="selectDummyDataCount" resultType="java.lang.Integer">

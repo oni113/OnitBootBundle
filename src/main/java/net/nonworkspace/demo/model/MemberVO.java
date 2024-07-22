@@ -18,7 +18,7 @@ public class MemberVO {
     @Schema(description = "회원 이름")
     private String name;
 
-    @Schema(description = "회원 이메일")
+    @Schema(description = "회원 이메일", example = "nomember@sdsdw.aaa")
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

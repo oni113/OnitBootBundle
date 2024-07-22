@@ -1,5 +1,10 @@
 package net.nonworkspace.demo.controller;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +39,38 @@ public class MemberController {
 
     @Operation(summary = "회원 리스트 조회", description = "회원 전체 데이터를 리스트로 조회한다.")
     @Parameter(name = "name", description = "이름에 값을 포함하는 문자열")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "회원 목록",
+            content = @Content(
+                schema = @Schema(implementation = MemberVO.class),
+                examples = @ExampleObject(
+                    value = """
+                        [
+                            {
+                                "memberId": 1,
+                                "name": "John",
+                                "email": "john@gmail.com",
+                                "createDate": "2020-01-01",
+                            },
+                            {
+                                "memberId": 2,
+                                "name": "김누구",
+                                "email": "kim@gmail.com",
+                                "createDate": "2020-01-01",
+                            }
+                        ]
+                        """
+
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal Server Error"
+        )
+    })
     @GetMapping("")
     public List<MemberVO> getMemberList(@RequestParam(name = "name", required = false) String name) {
         MemberVO member = new MemberVO();
