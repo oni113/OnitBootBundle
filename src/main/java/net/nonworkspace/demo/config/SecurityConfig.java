@@ -65,6 +65,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                             .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/error").permitAll()
+                            .requestMatchers("/", "/actuator").hasRole("ADMIN")
+                            .requestMatchers("/", "/actuator/**").hasRole("ADMIN")
                             .requestMatchers("/", "/admin/**").hasRole("ADMIN")
                             .requestMatchers("/", "/batch").hasRole("ADMIN")
                             .requestMatchers("/", "/batch/**").hasRole("ADMIN")

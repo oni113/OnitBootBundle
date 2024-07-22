@@ -1,3 +1,2 @@
 jwt:
-    expiration_time: 86400000 #1일
-    secret:
+    expiration_time: 86400 #1일 60 * 60 * 24

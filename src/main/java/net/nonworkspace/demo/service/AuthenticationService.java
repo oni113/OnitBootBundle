@@ -11,6 +11,7 @@ import net.nonworkspace.demo.domain.dto.UserInfoDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.security.jwt.JwtProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +28,12 @@ public class AuthenticationService {
 
     private final DemoUserDetailService demoUserDetailService;
 
+    @Value("${jwt.expiration_time}")
+    private int expireTime;
+
     public String getLoginToken(LoginRequestDto dto) {
-        String email = dto.getEmail();
-        String password = dto.getPassword();
+        String email = dto.email();
+        String password = dto.password();
 
         DemoUserDetails userDetails =
             (DemoUserDetails) demoUserDetailService.loadUserByUsername(email);
@@ -49,9 +53,7 @@ public class AuthenticationService {
         claims.put("email", userDetails.getUserInfoDto().getEmail());
         claims.put("name", userDetails.getUserInfoDto().getName());
 
-        String accessToken = jwtProvider.generateToken(claims, (60 * 60 * 8));
-        // String refreshToken = jwtProvider.generateToken(MapUtil.json.toMap(userInfo.toString()),
-        // (60 * 60 * 1));
+        String accessToken = jwtProvider.generateToken(claims, expireTime);
 
         return accessToken;
     }

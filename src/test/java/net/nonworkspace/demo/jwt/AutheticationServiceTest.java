@@ -22,9 +22,10 @@ class AutheticationServiceTest {
     @DisplayName("정상 아이디/패스워드 입력 후 토큰 값 발급되면 성공")
     void 로그인_인증_성공_토큰_생성() {
         // given
-        LoginRequestDto dto = new LoginRequestDto();
-        dto.setEmail("jwt@jjjjj.ww.cc");
-        dto.setPassword("Rkskekfk1!");
+        LoginRequestDto dto = new LoginRequestDto(
+            "jwt222@jjjjj.ww.cc",
+            "Rkskekfk1@"
+        );
         
         // when
         String token = service.getLoginToken(dto);

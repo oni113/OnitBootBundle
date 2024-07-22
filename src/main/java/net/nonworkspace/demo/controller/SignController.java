@@ -10,6 +10,7 @@ import net.nonworkspace.demo.domain.dto.LoginRequestDto;
 import net.nonworkspace.demo.service.AuthenticationService;
 import net.nonworkspace.demo.service.MemberJpaService;
 import net.nonworkspace.demo.utils.CookieUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,9 @@ public class SignController {
 
     private final HttpServletResponse response;
 
+    @Value("${jwt.expiration_time}")
+    private int expireTime;
+
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody JoinRequestDto joinRequestDto) {
         Long memberId = memberJpaService.join(joinRequestDto);
@@ -40,7 +44,7 @@ public class SignController {
     @PostMapping("/signin")
     public ResponseEntity<String> signIn(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         String token = authenticationService.getLoginToken(loginRequestDto);
-        CookieUtil.addCookie(response, "auth_req", token, 60 * 60 * 1);
+        CookieUtil.addCookie(response, "auth_req", token, expireTime);
         return ResponseEntity.status(HttpStatus.OK).body("signed OK!");
     }
 }

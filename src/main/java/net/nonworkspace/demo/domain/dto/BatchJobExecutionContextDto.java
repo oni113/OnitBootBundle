@@ -1,20 +1,15 @@
 package net.nonworkspace.demo.domain.dto;
 
-import lombok.Data;
 import net.nonworkspace.demo.batch.entity.BatchJobExecutionContext;
 
-@Data
-public class BatchJobExecutionContextDto {
+public record BatchJobExecutionContextDto(
+    Long jobExecutionId,
+    String shortContext,
+    String serializedContext
+) {
 
     public BatchJobExecutionContextDto(BatchJobExecutionContext batchJobExecutionContext) {
-        this.setJobExecutionId(batchJobExecutionContext.getId());
-        this.setShortContext(batchJobExecutionContext.getShortContext());
-        this.setSerializedContext(batchJobExecutionContext.getSerializedContext());
+        this(batchJobExecutionContext.getId(), batchJobExecutionContext.getShortContext(),
+            batchJobExecutionContext.getSerializedContext());
     }
-
-    private Long jobExecutionId;
-
-    private String shortContext;
-
-    private String serializedContext;
 }
