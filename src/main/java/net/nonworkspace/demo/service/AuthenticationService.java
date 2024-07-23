@@ -37,7 +37,7 @@ public class AuthenticationService {
 
         DemoUserDetails userDetails =
             (DemoUserDetails) demoUserDetailService.loadUserByUsername(email);
-        String recentPassword = userDetails.getUserInfoDto().getPassword();
+        String recentPassword = userDetails.userInfoDto().password();
         if (recentPassword == null || recentPassword.isEmpty()) {
             throw new CommonBizException(CommonBizExceptionCode.PASSWORD_EXPIRED);
         }
@@ -49,9 +49,9 @@ public class AuthenticationService {
         }
 
         Map<String, Object> claims = Jwts.claims();
-        claims.put("userId", userDetails.getUserInfoDto().getUserId());
-        claims.put("email", userDetails.getUserInfoDto().getEmail());
-        claims.put("name", userDetails.getUserInfoDto().getName());
+        claims.put("userId", userDetails.userInfoDto().userId());
+        claims.put("email", userDetails.userInfoDto().email());
+        claims.put("name", userDetails.userInfoDto().name());
 
         String accessToken = jwtProvider.generateToken(claims, expireTime);
 
@@ -65,8 +65,7 @@ public class AuthenticationService {
         DemoUserDetails userDetails = (DemoUserDetails) Optional.ofNullable(
                 demoUserDetailService.loadUserByUserId(userId))
             .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
-        UserInfoDto result = userDetails.getUserInfoDto();
-        result.setPassword(null);
+        UserInfoDto result = userDetails.userInfoDto();
         return result;
     }
 }

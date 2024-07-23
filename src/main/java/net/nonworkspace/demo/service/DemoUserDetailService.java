@@ -1,6 +1,5 @@
 package net.nonworkspace.demo.service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class DemoUserDetailService implements UserDetailsService {
             Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
                     CommonBizExceptionCode.NOT_EXIST_MEMBER.getMessage()));
-            return new DemoUserDetails(getUserInfo(member));
+            return new DemoUserDetails(new UserInfoDto(member));
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException(
                 CommonBizExceptionCode.NOT_EXIST_MEMBER.getMessage());
@@ -45,7 +44,7 @@ public class DemoUserDetailService implements UserDetailsService {
             Member member = Optional.ofNullable(memberRepository.find(memberId))
                 .orElseThrow(() -> new UsernameNotFoundException(
                     CommonBizExceptionCode.NOT_EXIST_MEMBER.getMessage()));
-            return new DemoUserDetails(getUserInfo(member));
+            return new DemoUserDetails(new UserInfoDto(member));
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException(
                 CommonBizExceptionCode.NOT_EXIST_MEMBER.getMessage());
@@ -53,19 +52,5 @@ public class DemoUserDetailService implements UserDetailsService {
             log.debug(ExceptionUtils.getStackTrace(e));
             throw e;
         }
-    }
-
-    private UserInfoDto getUserInfo(Member member) {
-        UserInfoDto userInfo = new UserInfoDto();
-        userInfo.setEmail(member.getEmail());
-        userInfo.setName(member.getName());
-        userInfo.setUserId(member.getMemberId());
-        userInfo.setEmail(member.getEmail());
-        userInfo.setName(member.getName());
-        userInfo.setPassword(member.getPasswords().stream()
-            .filter((p) -> p.getExpireDate().isAfter(LocalDateTime.now())).findAny().get()
-            .getMemberPassword());
-        userInfo.setRoles(member.getRoles());
-        return userInfo;
     }
 }

@@ -26,12 +26,7 @@ public class BatchJobMetaInfoService {
 
     public List<BatchJobExecutionDto> getBatchJobExecutions() {
         List<BatchJobExecutionDto> result = new ArrayList<>();
-        /*
-        batchJobMetaInfoRepository.findAll().stream().map(b -> new BatchJobExecutionDto(b))
-            .forEach((dto) -> result.add(dto));
-         */
-        batchJobExecutionRepository.findAll().stream()
-            .forEach(b -> result.add(new BatchJobExecutionDto(b)));
+        batchJobExecutionRepository.findAll().forEach(b -> result.add(new BatchJobExecutionDto(b)));
 
         return result;
     }
@@ -39,7 +34,7 @@ public class BatchJobMetaInfoService {
     public List<BatchJobExecutionDto> getBatchJobExecutions(int pageNo, String exitCode) {
         Sort sort = Sort.by("createTime").descending();
         Pageable pageable = PageRequest.of(pageNo, 10, sort);
-        Page<BatchJobExecution> data = null;
+        Page<BatchJobExecution> data;
         if (exitCode == null || exitCode.isEmpty()) {
             data = batchJobExecutionRepository.findAll(pageable);
         } else {

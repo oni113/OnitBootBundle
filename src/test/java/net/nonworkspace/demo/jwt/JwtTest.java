@@ -97,18 +97,4 @@ public class JwtTest {
         log.debug("=== after 10 seconds ====");
         assertThat(jwtProvider.verify(accessToken)).isFalse();
     }
-
-    // @Test
-    void toMapTest() {
-        // given
-        Member member = new Member();
-        member.setMemberId(1L);
-        member.setEmail("sadas@asdas.ocom");
-
-        // when
-        // UserInfoDto userInfo = modelMapper.map(member, UserInfoDto.class);
-
-        // then
-        // assertThat(member.getEmail().equals(userInfo.getEmail()));
-    }
 }

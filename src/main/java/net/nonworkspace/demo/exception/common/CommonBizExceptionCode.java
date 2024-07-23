@@ -8,6 +8,7 @@ public enum CommonBizExceptionCode {
     DATA_NOT_FOUND("ERR_COM_002", "데이터가 존재하지 않습니다"),
     DATA_EMAIL_DUPLICATE("ERR_COM_003", "중복된 이메일 값 입력"),
     INVALID_PASSWORD_FORMAT("ERR_COM_004", "잘못된 패스워드 값 형식"),
+    INVALID_EMAIL_FORMAT("ERR_COM_005", "잘못된 이메일 값 형식"),
     
     NOT_EXIST_MEMBER("ERR_LOGIN_001", "회원 정보가 존재하지 않습니다."),
     NOT_EXIST_LOGIN_EMAIL("ERR_LOGIN_002", "이메일이 존재하지 않습니다."),

@@ -40,24 +40,24 @@ public class MemberJpaService {
     @Transactional
     public Long join(JoinRequestDto joinDto) {
         Member member = new Member();
-        member.setEmail(joinDto.getEmail());
+        member.setEmail(joinDto.email());
         validateDuplicateEmail(member);
 
-        if (!joinDto.getPassword().equals(joinDto.getRePassword())) {
+        if (!joinDto.password().equals(joinDto.rePassword())) {
             throw new CommonBizException(CommonBizExceptionCode.PASSWORD_INPUT_NOT_MATCHED);
         }
 
-        if (!PasswordUtil.isPassword(joinDto.getPassword())) {
+        if (!PasswordUtil.isPassword(joinDto.password())) {
             throw new CommonBizException(CommonBizExceptionCode.INVALID_PASSWORD_FORMAT);
         }
 
-        member.setName(joinDto.getName());
+        member.setName(joinDto.name());
         Long memberId = memberRepository.saveMember(member);
 
         member = memberRepository.find(memberId);
         Password password = new Password();
         password.setMember(member);
-        password.setMemberPassword(encoder.encode(joinDto.getPassword()));
+        password.setMemberPassword(encoder.encode(joinDto.password()));
         password.setExpireDate(LocalDateTime.now().plusMonths(6));
         memberRepository.savePassword(password);
 

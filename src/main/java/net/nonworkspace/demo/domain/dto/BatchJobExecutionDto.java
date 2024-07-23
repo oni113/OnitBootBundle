@@ -1,12 +1,9 @@
 package net.nonworkspace.demo.domain.dto;
 
 import java.time.Instant;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
 import net.nonworkspace.demo.batch.entity.BatchJobExecution;
-import net.nonworkspace.demo.batch.entity.BatchJobExecutionParam;
 
 public record BatchJobExecutionDto(
     Long jobExecutionId,
@@ -35,10 +32,11 @@ public record BatchJobExecutionDto(
             batchJobExecution.getExitMessage(),
             batchJobExecution.getLastUpdated(),
             new BatchJobExecutionContextDto(batchJobExecution.getBatchJobExecutionContext()),
-            new AbstractList<BatchJobExecutionParamDto>() {
+            new ArrayList<BatchJobExecutionParamDto>() {
                 @Override
                 public BatchJobExecutionParamDto get(int index) {
-                    return new BatchJobExecutionParamDto(batchJobExecution.getBatchJobExecutionParams().get(index));
+                    return new BatchJobExecutionParamDto(
+                        batchJobExecution.getBatchJobExecutionParams().get(index));
                 }
 
                 @Override
