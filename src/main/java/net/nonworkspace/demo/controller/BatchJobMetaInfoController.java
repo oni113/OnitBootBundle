@@ -4,8 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.batch.entity.BatchJobExecution;
-import net.nonworkspace.demo.domain.dto.BatchJobExecutionDto;
+import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
 import net.nonworkspace.demo.service.BatchJobMetaInfoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,7 @@ public class BatchJobMetaInfoController {
     private final BatchJobMetaInfoService batchJobMetaInfoService;
 
     @Operation(summary = "배치 작업 목록 조회", description = "배치 작업 목록 데이터 전체를 조회한다.")
-    @GetMapping("")
+    @GetMapping("/")
     public List<BatchJobExecutionDto> getBatchJobList() {
         return batchJobMetaInfoService.getBatchJobExecutions();
     }

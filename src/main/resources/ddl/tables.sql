@@ -120,3 +120,40 @@ CREATE TABLE public."role"
     member_id int4    NOT NULL,
     CONSTRAINT role_pk PRIMARY KEY (role_id)
 );
+
+-- public.recruit definition
+
+-- Drop table
+
+-- DROP TABLE public.recruit;
+
+CREATE TABLE public.recruit (
+    recruit_id serial4 NOT NULL,
+    company_id int4 NOT NULL,
+    "type" varchar NOT NULL,
+    title varchar NOT NULL,
+    description text NULL,
+    salary varchar NOT NULL,
+    "location" varchar NOT NULL,
+    create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    update_date timestamp NULL,
+    CONSTRAINT recruit_pk PRIMARY KEY (recruit_id)
+);
+CREATE INDEX recruit_company_id_idx ON public.recruit USING btree (company_id);
+
+-- public.company definition
+
+-- Drop table
+
+-- DROP TABLE public.company;
+
+CREATE TABLE public.company (
+    company_id serial4 NOT NULL,
+    company_name varchar NOT NULL,
+    description text NULL,
+    contact_email varchar NOT NULL,
+    contact_phone varchar NULL,
+    create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    update_date timestamp NULL,
+    CONSTRAINT company_pk PRIMARY KEY (company_id)
+);

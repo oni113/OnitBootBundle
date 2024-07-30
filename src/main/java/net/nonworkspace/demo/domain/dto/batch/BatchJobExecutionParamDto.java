@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain.dto;
+package net.nonworkspace.demo.domain.dto.batch;
 
 import net.nonworkspace.demo.batch.entity.BatchJobExecutionParam;
 

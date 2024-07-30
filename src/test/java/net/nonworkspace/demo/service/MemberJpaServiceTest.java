@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.Member;
-import net.nonworkspace.demo.domain.dto.JoinRequestDto;
+import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import org.junit.jupiter.api.BeforeEach;

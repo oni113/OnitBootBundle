@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.batch.entity.BatchJobExecution;
-import net.nonworkspace.demo.domain.dto.BatchJobExecutionDto;
+import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.repository.BatchJobExecutionRepository;
@@ -26,7 +26,8 @@ public class BatchJobMetaInfoService {
 
     public List<BatchJobExecutionDto> getBatchJobExecutions() {
         List<BatchJobExecutionDto> result = new ArrayList<>();
-        batchJobExecutionRepository.findAll().forEach(b -> result.add(new BatchJobExecutionDto(b)));
+        // batchJobExecutionRepository.findAll().parallelStream().forEach(b -> result.add(new BatchJobExecutionDto(b)));    // transaction error!!
+        batchJobExecutionRepository.findAll().stream().forEach(b -> result.add(new BatchJobExecutionDto(b)));
 
         return result;
     }
@@ -41,7 +42,8 @@ public class BatchJobMetaInfoService {
             data = batchJobExecutionRepository.findByExitCodeContains(exitCode, pageable);
         }
         List<BatchJobExecutionDto> result = new ArrayList<>();
-        data.stream().forEach(b -> result.add(new BatchJobExecutionDto(b)));
+        // data.stream().forEach(b -> result.add(new BatchJobExecutionDto(b)));
+        data.forEach(b -> result.add(new BatchJobExecutionDto(b)));
         return result;
     }
 

@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain.dto;
+package net.nonworkspace.demo.domain.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

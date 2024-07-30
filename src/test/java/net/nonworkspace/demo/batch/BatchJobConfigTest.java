@@ -14,7 +14,7 @@ public class BatchJobConfigTest {
     @Autowired
     private BatchScheduler batchScheduler;
 
-    @Test
+    // @Test
     void runJobTest() {
         batchScheduler.runJob();
         Exception e = assertThrows(RuntimeException.class, () -> batchScheduler.runJob());

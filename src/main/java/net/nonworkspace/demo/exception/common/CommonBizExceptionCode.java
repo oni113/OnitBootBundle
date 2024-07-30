@@ -15,7 +15,9 @@ public enum CommonBizExceptionCode {
     PASSWORD_NOT_MATCHED("ERR_LOGIN_003", "패스워드가 일치하지 않습니다."),
     PASSWORD_EXPIRED("ERR_LOGIN_004", "패스워드 유효 기간 만료"),
     
-    PASSWORD_INPUT_NOT_MATCHED("ERR_JOIN_003", "입력한 패스워드가 서로 일치하지 않습니다.");
+    PASSWORD_INPUT_NOT_MATCHED("ERR_JOIN_003", "입력한 패스워드가 서로 일치하지 않습니다."),
+
+    ACCESS_NOT_ALLOWED("ERR_AUTH_001", "접근 권한이 없습니다.");
     
     private final String code;
     

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.nonworkspace.demo.domain.Member;
 import net.nonworkspace.demo.domain.Password;
-import net.nonworkspace.demo.domain.dto.JoinRequestDto;
+import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.repository.MemberRepository;

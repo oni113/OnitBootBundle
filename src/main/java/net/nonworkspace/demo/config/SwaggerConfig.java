@@ -1,21 +1,30 @@
 package net.nonworkspace.demo.config;
 
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
+import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import java.util.List;
+import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
+import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@SecurityScheme(name = "Authorization", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER,
-    scheme = "bearer", bearerFormat = "JWT", paramName = "Authorization")
 @Configuration
 public class SwaggerConfig {
 
     private static final String AUTH_TOKEN_HEADER = "Authorization";
+
+    private SecurityScheme securityScheme = new SecurityScheme()
+        .type(Type.HTTP)
+        .scheme("bearer")
+        .bearerFormat("JWT")
+        .in(In.HEADER)
+        .name("Authorization");
 
     @Bean
     public GroupedOpenApi anonymousAPI() {
@@ -35,6 +44,10 @@ public class SwaggerConfig {
                 (c) -> c.info(new Info().title("user API")
                         .description("유저 권한 있어야 쓸 수 있는 API").version("1.0.0"))
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
+                    .components(
+                        new Components()
+                            .addSchemas("UserInfoDto", new Schema<UserInfoDto>())
+                            .addSecuritySchemes("userSecurityScheme", securityScheme))
             )
             .pathsToMatch(new String[]{"/user/**"})
             .build();
@@ -47,6 +60,10 @@ public class SwaggerConfig {
                 (c) -> c.info(new Info().title("admin API")
                         .description("관리자 권한 있어야 쓸 수 있는 API").version("1.0.0"))
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
+                    .components(
+                        new Components()
+                            .addSchemas("BatchJobExecutionDto", new Schema<BatchJobExecutionDto>())
+                            .addSecuritySchemes("adminSecurityScheme", securityScheme))
             )
             .pathsToMatch(new String[]{"/admin/**", "/batch", "/batch/**"})
             .build();

@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain.dto;
+package net.nonworkspace.demo.domain.dto.batch;
 
 import java.time.Instant;
 import java.util.ArrayList;

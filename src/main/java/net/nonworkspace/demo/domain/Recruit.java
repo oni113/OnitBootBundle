@@ -5,38 +5,42 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity
-public class Company {
+public class Recruit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
+    @Column(name = "recruit_id")
     private Long id;
 
-    private String companyName;
+    @Enumerated(EnumType.STRING)
+    private RecruitType type;
+
+    private String title;
 
     private String description;
 
-    @Email
-    private String contactEmail;
+    private String location;
 
-    private String contactPhone;
+    private String salary;
 
-    @OneToOne(mappedBy = "company", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private Recruit recruit;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

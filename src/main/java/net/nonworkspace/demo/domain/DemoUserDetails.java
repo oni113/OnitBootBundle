@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.dto.UserInfoDto;
+import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
