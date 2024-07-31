@@ -30,7 +30,7 @@ public class RecruitService {
 
     public List<RecruitDto> getPage(RecruitType type, int pageNo, int pageSize) {
         Sort sort = Sort.by("createDate").descending();
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Pageable pageable = PageRequest.of((pageNo - 1), pageSize, sort);   // pageNo : zero-based
         Page<Recruit> recruits;
         if (type != null) {
             recruits = recruitRepository.findByType(type, pageable);

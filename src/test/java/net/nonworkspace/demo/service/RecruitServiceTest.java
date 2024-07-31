@@ -32,15 +32,15 @@ class RecruitServiceTest {
     }
 
     @Test
-    @DisplayName("7건 넣고 페이지 0페이지 조회해서 조회해서 6건, 1페이지 조회해서 1건 나오면 성공")
+    @DisplayName("7건 넣고 페이지 1 페이지 조회해서 조회해서 6건, 2 페이지 조회해서 1건 나오면 성공 & 1 페이지 데이터에 2 페이지 데이터 있으면 실패")
     void getPage() {
         RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
         for (int i = 0; i < 7; i++) {
             recruitService.registerRecruit(testNewRecruitViewDto);
         }
-        List<RecruitDto> firstPageResult = recruitService.getPage(null, 0, 6);
+        List<RecruitDto> firstPageResult = recruitService.getPage(null, 1, 6);
         assertThat(firstPageResult.size()).isEqualTo(6);
-        List<RecruitDto> secondPageResult = recruitService.getPage(null, 1, 6);
+        List<RecruitDto> secondPageResult = recruitService.getPage(null, 2, 6);
         assertThat(secondPageResult.size()).isEqualTo(1);
         firstPageResult.stream().filter(f -> f.recruitId().equals(secondPageResult.get(0).recruitId()))
             .findFirst().ifPresent(f -> {

@@ -33,7 +33,7 @@ public class RecruitController {
 
     @GetMapping("")
     public List<RecruitDto> getRecruitPage(
-        @RequestParam(name = "pageNo", required = true, defaultValue = "0") int pageNo,
+        @RequestParam(name = "pageNo", required = true, defaultValue = "1") int pageNo,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") int pageSize,
         @RequestParam(name = "type", required = false) RecruitType type) {
         return recruitService.getPage(type, pageNo, pageSize);
