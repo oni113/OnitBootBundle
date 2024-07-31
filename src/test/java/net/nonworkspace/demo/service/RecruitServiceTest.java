@@ -2,7 +2,9 @@ package net.nonworkspace.demo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.RecruitType;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
@@ -29,13 +31,26 @@ class RecruitServiceTest {
     void tearDown() {
     }
 
-    // @Test
-    @DisplayName("7건 넣고 페이지 0번 조회해서 조회해서 6건 나오면 성공")
+    @Test
+    @DisplayName("7건 넣고 페이지 0페이지 조회해서 조회해서 6건, 1페이지 조회해서 1건 나오면 성공")
     void getPage() {
+        RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
+        for (int i = 0; i < 7; i++) {
+            recruitService.registerRecruit(testNewRecruitViewDto);
+        }
+        List<RecruitDto> firstPageResult = recruitService.getPage(null, 0, 6);
+        assertThat(firstPageResult.size()).isEqualTo(6);
+        List<RecruitDto> secondPageResult = recruitService.getPage(null, 1, 6);
+        assertThat(secondPageResult.size()).isEqualTo(1);
+        firstPageResult.stream().filter(f -> f.recruitId().equals(secondPageResult.get(0).recruitId()))
+            .findFirst().ifPresent(f -> {
+                log.error("페이지 데이터 중복 발생!");
+                fail();
+            });
     }
 
     @Test
-    void registerRecruit() throws Exception {
+    void registerRecruit() {
         // given
         CompanyDto companyDto = new CompanyDto(
             null,
@@ -66,38 +81,6 @@ class RecruitServiceTest {
     }
 
     @Test
-    @DisplayName("없는 회사 정보로 리크루트를 등록할 때, DATA_NOT_FOUND 예외 발생하면 성공")
-    void registerRecruitCompanyNotFound() {
-        // given
-        RecruitViewDto recruitViewDto = new RecruitViewDto(
-            null,
-            RecruitType.FULL_TIME,
-            "Senior React Developer",
-            "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
-            "$70K - $80K",
-            "Boston, MA",
-            new CompanyDto(
-                -99999L,
-                "test company",
-                "This is test company",
-                "aaa@sdas.coo",
-                "123123123"
-            )
-        );
-
-        // when
-        Exception registerRecruitException = assertThrows(CommonBizException.class,
-            () -> recruitService.registerRecruit(recruitViewDto));
-
-        // then
-        assertThat(registerRecruitException.getMessage()).isEqualTo(CommonBizExceptionCode.DATA_NOT_FOUND.getMessage());
-    }
-
-    // @Test
-    void getCompany() {
-    }
-
-    @Test
     void registerCompany() {
         // given
         CompanyDto companyDto = new CompanyDto(
@@ -117,7 +100,7 @@ class RecruitServiceTest {
 
     @Test
     @DisplayName("회사, 리크루트 등록하고 리크루트 id 으로 조회되면 성공")
-    void getRecruit() throws Exception {
+    void getRecruit() {
         // given
         CompanyDto companyDto = new CompanyDto(
             null,
@@ -149,5 +132,89 @@ class RecruitServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.recruitId()).isEqualTo(recruitId);
         assertThat(result.company().companyId()).isNotNull();
+    }
+
+    @Test
+    void modifyRecruit() {
+        // given
+        RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
+        Long recruitId = recruitService.registerRecruit(testNewRecruitViewDto);
+        log.debug("registered recruitId: {}", recruitId);
+
+        // when
+        RecruitViewDto result = recruitService.getRecruit(recruitId);
+
+        CompanyDto editCompanyDto = new CompanyDto(
+            result.company().companyId(),
+            "Edit Company Name",
+            "Edit Company Description",
+            "edit@edit.ccc",
+            "000000"
+        );
+
+        RecruitViewDto editRecruitDto = new RecruitViewDto(
+            result.recruitId(),
+            RecruitType.REMOTE,
+            "Edit Recruit Title",
+            "Edit Recruit Description",
+            "Under $50K",
+            "Edit Recruit Location",
+            editCompanyDto
+        );
+
+        Long editRecruitId = recruitService.modifyRecruit(editRecruitDto);
+        log.debug("modified RecruitId: {}", editRecruitId);
+        RecruitViewDto editResult = recruitService.getRecruit(editRecruitId);
+
+        // then
+        assertThat(recruitId).isEqualTo(editRecruitId);
+        assertThat(editResult.title()).isEqualTo(editRecruitDto.title());
+        assertThat(editResult.company().companyId()).isEqualTo(editCompanyDto.companyId());
+        assertThat(editResult.company().companyName()).isEqualTo(editCompanyDto.companyName());
+    }
+
+    @Test
+    void deleteRecruit() {
+        // given
+        RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
+        Long recruitId = recruitService.registerRecruit(testNewRecruitViewDto);
+        log.debug("for delete test recruitId: {}", recruitId);
+        Long companyId = recruitService.getRecruit(recruitId).company().companyId();
+        log.debug("for delete test companyId: {}", companyId);
+
+        // when
+        Long deleteCount = recruitService.deleteRecruit(recruitId);
+
+        // then
+        assertThat(deleteCount).isEqualTo(1L);
+        Exception companyException = assertThrows(CommonBizException.class,
+            () -> recruitService.getCompany(companyId));
+        assertThat(companyException).hasMessageContaining(
+            CommonBizExceptionCode.DATA_NOT_FOUND.getMessage());
+        Exception recruitException = assertThrows(CommonBizException.class,
+            () -> recruitService.getRecruit(recruitId));
+        assertThat(recruitException).hasMessageContaining(
+            CommonBizExceptionCode.DATA_NOT_FOUND.getMessage());
+    }
+
+    private static RecruitViewDto getTestRecruitViewDto() {
+        CompanyDto companyDto = new CompanyDto(
+            null,
+            "NewTek Solutions",
+            "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
+            "aaa@aaa.ccc",
+            "123123123"
+        );
+
+        RecruitViewDto recruitViewDto = new RecruitViewDto(
+            null,
+            RecruitType.FULL_TIME,
+            "Senior React Developer",
+            "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
+            "$70K - $80K",
+            "Boston, MA",
+            companyDto
+        );
+        return recruitViewDto;
     }
 }

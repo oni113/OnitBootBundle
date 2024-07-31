@@ -1,5 +1,6 @@
 package net.nonworkspace.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -89,5 +90,42 @@ public class RecruitService {
         List<RecruitDto> result = new ArrayList<>();
         recruits.stream().forEach(rc -> result.add(new RecruitDto(rc)));
         return result;
+    }
+
+    public Long modifyRecruit(RecruitViewDto recruitViewDto) {
+        Company company = companyRepository.findById(recruitViewDto.company().companyId())
+            .orElseThrow(() -> new CommonBizException(
+                CommonBizExceptionCode.DATA_NOT_FOUND));
+        company.setCompanyName(recruitViewDto.company().companyName());
+        company.setDescription(recruitViewDto.company().description());
+        company.setContactEmail(recruitViewDto.company().contactEmail());
+        company.setContactPhone(recruitViewDto.company().contactPhone());
+        company.setUpdateDate(LocalDateTime.now());
+        companyRepository.save(company);
+
+        Recruit recruit = recruitRepository.findById(recruitViewDto.recruitId())
+            .orElseThrow(() -> new CommonBizException(
+                CommonBizExceptionCode.DATA_NOT_FOUND));
+        recruit.setType(recruitViewDto.type());
+        recruit.setTitle(recruitViewDto.title());
+        recruit.setDescription(recruitViewDto.description());
+        recruit.setSalary(recruitViewDto.salary());
+        recruit.setLocation(recruitViewDto.location());
+        recruit.setUpdateDate(LocalDateTime.now());
+        recruitRepository.save(recruit);
+
+        return recruit.getId();
+    }
+
+    public Long deleteRecruit(Long recruitId) {
+        Recruit recruit = recruitRepository.findById(recruitId)
+            .orElseThrow(() -> new CommonBizException(
+                CommonBizExceptionCode.DATA_NOT_FOUND));
+        Company company = companyRepository.findById(recruit.getCompany().getId())
+            .orElseThrow(() -> new CommonBizException(
+                CommonBizExceptionCode.DATA_NOT_FOUND));
+        companyRepository.delete(company);
+        recruitRepository.delete(recruit);
+        return 1L;
     }
 }
