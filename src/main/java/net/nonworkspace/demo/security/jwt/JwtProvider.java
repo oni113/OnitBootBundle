@@ -21,13 +21,6 @@ public class JwtProvider {
 
     @Value("${custom.jwt.secretKey}")
     private String secretKeyPlain;
-
-    public SecretKey getSecretKey() {
-        if (cachedSecretKey == null) {
-            cachedSecretKey = generateSecretKey();
-        }
-        return cachedSecretKey;
-    }
     
     public String generateToken(Map<String, Object> claims, int seconds) {
         long now = new Date().getTime();
@@ -47,7 +40,7 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token);
         } catch (Exception e) {
-            log.error("Error verifing token: {}", ExceptionUtils.getStackTrace(e));
+            log.error("Error verifying token: {}", ExceptionUtils.getStackTrace(e));
             return false;
         }
         
@@ -65,14 +58,6 @@ public class JwtProvider {
         log.debug("bodyJson: {}", bodyJson);
         
         return MapUtil.json.toMap(bodyJson);
-    }
-    
-    public Long getUserId(String token) {
-        return Long.parseLong(getClaims(token).get("userId").toString());
-    }
-    
-    public String getUserEmail(String token) {
-        return getClaims(token).get("email").toString();
     }
 
     private SecretKey generateSecretKey() {

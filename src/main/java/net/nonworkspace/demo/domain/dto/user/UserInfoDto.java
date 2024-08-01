@@ -30,23 +30,6 @@ public record UserInfoDto(
                 .filter(p -> p.getExpireDate().isAfter(LocalDateTime.now())).findAny().get()
                 .getMemberPassword(),
             member.getRoles(),
-            /*
-            new ArrayList<>() {
-                @Override
-                public UserRoleDto get(int index) {
-                    log.info("======= Convert Role to UserRoleDto roleName: {}",
-                        member.getRoles().get(index).getRoleName());
-                    return new UserRoleDto(
-                        member.getRoles().get(index));
-                }
-
-                @Override
-                public int size() {
-                    return member.getRoles().size();
-                }
-            },
-
-             */
             true,
             true,
             true,

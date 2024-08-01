@@ -35,8 +35,7 @@ public class AuthenticationService {
         String email = dto.email();
         String password = dto.password();
 
-        DemoUserDetails userDetails =
-            (DemoUserDetails) demoUserDetailService.loadUserByUsername(email);
+        DemoUserDetails userDetails = demoUserDetailService.loadUserByUsername(email);
         String recentPassword = userDetails.userInfoDto().password();
         if (recentPassword == null || recentPassword.isEmpty()) {
             throw new CommonBizException(CommonBizExceptionCode.PASSWORD_EXPIRED);
@@ -62,7 +61,7 @@ public class AuthenticationService {
         Map<String, Object> claimsFromToken = jwtProvider.getClaims(accessToken);
         Long userId = Long.parseLong(claimsFromToken.get("userId").toString());
 
-        DemoUserDetails userDetails = (DemoUserDetails) Optional.ofNullable(
+        DemoUserDetails userDetails = Optional.ofNullable(
                 demoUserDetailService.loadUserByUserId(userId))
             .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         UserInfoDto result = userDetails.userInfoDto();
