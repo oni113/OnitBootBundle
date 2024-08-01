@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.domain.Company;
 import net.nonworkspace.demo.domain.RecruitType;
+import net.nonworkspace.demo.domain.Salary;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
@@ -52,32 +54,16 @@ class RecruitServiceTest {
     @Test
     void registerRecruit() {
         // given
-        CompanyDto companyDto = new CompanyDto(
-            null,
-            "NewTek Solutions",
-            "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
-            "aaa@aaa.ccc",
-            "123123123"
-        );
-        Long companyId = recruitService.registerCompany(companyDto);
-
-        RecruitViewDto recruitViewDto = new RecruitViewDto(
-            null,
-            RecruitType.FULL_TIME,
-            "Senior React Developer",
-            "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
-            "$70K - $80K",
-            "Boston, MA",
-            new CompanyDto(recruitService.getCompany(companyId))
-        );
+        RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
 
         // when
-        Long recruitId = recruitService.registerRecruit(recruitViewDto);
+        Long recruitId = recruitService.registerRecruit(testNewRecruitViewDto);
         log.debug("recruitId: {}", recruitId);
+        RecruitViewDto result = recruitService.getRecruit(recruitId);
 
         // then
         assertThat(recruitId).isNotNull();
-        assertThat(companyId).isEqualTo(recruitViewDto.company().companyId());
+        assertThat(result.company().companyId()).isNotNull();
     }
 
     @Test
@@ -94,8 +80,10 @@ class RecruitServiceTest {
         // when
         Long companyId = recruitService.registerCompany(companyDto);
         log.debug("companyId: {}", companyId);
+        Company company = recruitService.getCompany(companyId);
         // then
         assertThat(companyId).isNotNull();
+        assertThat(company.getCreateDate()).isNotNull();
     }
 
     @Test
@@ -115,7 +103,7 @@ class RecruitServiceTest {
             RecruitType.FULL_TIME,
             "Senior React Developer",
             "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
-            "$70K - $80K",
+            Salary.$125K_150K,
             "Boston, MA",
             companyDto
         );
@@ -157,7 +145,7 @@ class RecruitServiceTest {
             RecruitType.REMOTE,
             "Edit Recruit Title",
             "Edit Recruit Description",
-            "Under $50K",
+            Salary.UNDER_$50K,
             "Edit Recruit Location",
             editCompanyDto
         );
@@ -206,15 +194,14 @@ class RecruitServiceTest {
             "123123123"
         );
 
-        RecruitViewDto recruitViewDto = new RecruitViewDto(
+        return new RecruitViewDto(
             null,
             RecruitType.FULL_TIME,
             "Senior React Developer",
             "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
-            "$70K - $80K",
+            Salary.$70K_80K,
             "Boston, MA",
             companyDto
         );
-        return recruitViewDto;
     }
 }

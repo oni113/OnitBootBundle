@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class MemberService {
@@ -33,6 +33,7 @@ public class MemberService {
         return result;
     }
 
+    @Transactional
     public Long join(MemberVO memberVO) {
         validateInput(memberVO);
         validateDuplicateEmail(memberVO);
@@ -50,6 +51,7 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
     public MemberVO editMember(MemberVO memberVO) {
         int result = memberMapper.updateMember(memberVO);
         if (result <= 0) {
@@ -58,6 +60,7 @@ public class MemberService {
         return memberMapper.findById(memberVO.getMemberId());
     }
 
+    @Transactional
     public int deleteMember(Long memberId) {
         int result = memberMapper.deleteMember(memberId);
         if (result <= 0) {

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DummyDataService {
 
@@ -25,6 +25,7 @@ public class DummyDataService {
 
     private final SqlSessionFactory sqlSessionFactory;
 
+    @Transactional
     public int[] createDummyDataOneMillionRowsBatchType() throws Exception {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         DummyDataMapper batchTypeMapper = sqlSession.getMapper(DummyDataMapper.class);
@@ -49,6 +50,7 @@ public class DummyDataService {
         return batchResults.get(0).getUpdateCounts();
     }
 
+    @Transactional
     public int createDummyDataOneMillionRowsSimpleType() throws Exception {
         int rowCount = 0;
 

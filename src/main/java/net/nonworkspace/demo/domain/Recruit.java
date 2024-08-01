@@ -1,7 +1,6 @@
 package net.nonworkspace.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,11 +14,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruit {
 
     @Id
@@ -36,7 +38,8 @@ public class Recruit {
 
     private String location;
 
-    private String salary;
+    @Enumerated(EnumType.STRING)
+    private Salary salary;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
@@ -57,5 +60,18 @@ public class Recruit {
         if (this.createDate == null) {
             this.createDate = LocalDateTime.now();
         }
+    }
+
+    public static Recruit createRecruit(Long id, RecruitType type, String title, String description,
+        Salary salary, String location, Company company) {
+        Recruit recruit = new Recruit();
+        recruit.setId(id);
+        recruit.setType(type);
+        recruit.setTitle(title);
+        recruit.setDescription(description);
+        recruit.setSalary(salary);
+        recruit.setLocation(location);
+        recruit.setCompany(company);
+        return recruit;
     }
 }

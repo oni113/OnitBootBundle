@@ -3,6 +3,7 @@ package net.nonworkspace.demo.domain.dto.recruit;
 import jakarta.validation.constraints.NotNull;
 import net.nonworkspace.demo.domain.Recruit;
 import net.nonworkspace.demo.domain.RecruitType;
+import net.nonworkspace.demo.domain.Salary;
 
 public record RecruitDto(
     Long recruitId,
@@ -10,7 +11,7 @@ public record RecruitDto(
     @NotNull RecruitType type,
     @NotNull String title,
     String description,
-    @NotNull String salary,
+    @NotNull Salary salary,
     @NotNull String location
 ) {
     public RecruitDto(Recruit recruit) {

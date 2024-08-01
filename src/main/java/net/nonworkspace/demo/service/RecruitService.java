@@ -19,9 +19,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecruitService {
 
     private final RecruitRepository recruitRepository;
@@ -42,18 +44,20 @@ public class RecruitService {
         return result;
     }
 
+    @Transactional
     public Long registerRecruit(RecruitViewDto recruitViewDto) {
         Long companyId = registerCompany(recruitViewDto.company());
 
-        Recruit recruit = new Recruit();
-        recruit.setType(recruitViewDto.type());
-        recruit.setTitle(recruitViewDto.title());
-        recruit.setDescription(recruitViewDto.description());
-        recruit.setSalary(recruitViewDto.salary());
-        recruit.setLocation(recruitViewDto.location());
-        recruit.setCompany(
+        Recruit recruit = Recruit.createRecruit(
+            null,
+            recruitViewDto.type(),
+            recruitViewDto.title(),
+            recruitViewDto.description(),
+            recruitViewDto.salary(),
+            recruitViewDto.location(),
             companyRepository.findById(companyId).orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND)));
+                CommonBizExceptionCode.DATA_NOT_FOUND))
+        );
         recruitRepository.save(recruit);
         return recruit.getId();
     }
@@ -63,12 +67,16 @@ public class RecruitService {
             CommonBizExceptionCode.DATA_NOT_FOUND));
     }
 
+    @Transactional
     public Long registerCompany(CompanyDto companyDto) {
-        Company company = new Company();
-        company.setCompanyName(companyDto.companyName());
-        company.setDescription(companyDto.description());
-        company.setContactEmail(companyDto.contactEmail());
-        company.setContactPhone(companyDto.contactPhone());
+        Company company = Company.createCompany(
+            null,
+            companyDto.companyName(),
+            companyDto.description(),
+            companyDto.contactEmail(),
+            companyDto.contactPhone(),
+            null
+        );
         companyRepository.save(company);
         return company.getId();
     }
@@ -92,6 +100,7 @@ public class RecruitService {
         return result;
     }
 
+    @Transactional
     public Long modifyRecruit(RecruitViewDto recruitViewDto) {
         Company company = companyRepository.findById(recruitViewDto.company().companyId())
             .orElseThrow(() -> new CommonBizException(
@@ -117,6 +126,7 @@ public class RecruitService {
         return recruit.getId();
     }
 
+    @Transactional
     public Long deleteRecruit(Long recruitId) {
         Recruit recruit = recruitRepository.findById(recruitId)
             .orElseThrow(() -> new CommonBizException(
