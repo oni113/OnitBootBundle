@@ -138,4 +138,11 @@ public class RecruitService {
         recruitRepository.delete(recruit);
         return 1L;
     }
+
+    public List<CompanyDto> getCompanies() {
+        List<Company> companies = companyRepository.findAll();
+        List<CompanyDto> result = new ArrayList<>();
+        companies.stream().forEach(c -> result.add(new CompanyDto(c)));
+        return result;
+    }
 }

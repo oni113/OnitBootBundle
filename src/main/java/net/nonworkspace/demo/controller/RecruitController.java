@@ -90,4 +90,9 @@ public class RecruitController {
             return ResponseEntity.ok(new CommonResponseDto(-1L, "삭제 실패: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/companies")
+    public List<CompanyDto> getCompanies() {
+        return recruitService.getCompanies();
+    }
 }
