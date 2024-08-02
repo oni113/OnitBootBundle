@@ -40,7 +40,7 @@ public class RecruitService {
             recruits = recruitRepository.findAll(pageable);
         }
         List<RecruitDto> result = new ArrayList<>();
-        recruits.stream().forEach(rc -> result.add(new RecruitDto(rc)));
+        recruits.stream().forEach(r -> result.add(new RecruitDto(r)));
         return result;
     }
 
@@ -96,7 +96,7 @@ public class RecruitService {
             recruits = recruitRepository.findAllByOrderByCreateDateDesc();
         }
         List<RecruitDto> result = new ArrayList<>();
-        recruits.stream().forEach(rc -> result.add(new RecruitDto(rc)));
+        recruits.stream().forEach(r -> result.add(new RecruitDto(r)));
         return result;
     }
 
@@ -140,9 +140,8 @@ public class RecruitService {
     }
 
     public List<CompanyDto> getCompanies() {
-        List<Company> companies = companyRepository.findAll();
         List<CompanyDto> result = new ArrayList<>();
-        companies.stream().forEach(c -> result.add(new CompanyDto(c)));
+        companyRepository.findAll().stream().forEach(c -> result.add(new CompanyDto(c)));
         return result;
     }
 }
