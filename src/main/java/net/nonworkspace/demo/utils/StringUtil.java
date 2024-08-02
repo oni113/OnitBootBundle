@@ -10,15 +10,15 @@ public class StringUtil {
 
     public static String getRandomStringValue(int length) {
         Random random = new Random();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder builer = new StringBuilder();
         for (int i = 0; i < length; i++) {
             if (random.nextBoolean()) {
-                buf.append((char) ((int) random.nextInt(26) + 97));
+                builer.append((char) ((int) random.nextInt(26) + 97));
             } else {
-                buf.append(random.nextInt(10));
+                builer.append(random.nextInt(10));
             }
         }
-        return buf.toString();
+        return builer.toString();
     }
 
     public static boolean isEmail(String email) {

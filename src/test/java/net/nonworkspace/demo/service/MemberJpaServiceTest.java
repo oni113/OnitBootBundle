@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @SpringBootTest
 @Transactional
 @Slf4j
 public class MemberJpaServiceTest {
 
     @Autowired
-    // private MemberService memberService;
     private MemberJpaService memberService;
 
     @BeforeEach
@@ -57,8 +57,8 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.stream().findFirst().get().getName()).isEqualTo("테스트1");
+        assertEquals(result.size(), 2, "조회 결과가 2 건이어야 한다");
+        assertEquals(result.stream().findFirst().get().getName(), "테스트1", "첫번째 데이터의 회원 이름이 '테스트1'이여하 한다");
     }
 
     @Test
@@ -93,12 +93,7 @@ public class MemberJpaServiceTest {
     @DisplayName("조회 결과가 null 이 아니고, 조회한 결과의 이메일 값이 등록한 이메일 값과 일치해야 성공")
     void testGetMember() {
         // given
-        JoinRequestDto member1 = new JoinRequestDto(
-            "테스트1",
-            "test1@test.ttt",
-            "Rkskekfk1!",
-            "Rkskekfk1!"
-        );
+        JoinRequestDto member1 = getTestJoinRequestDto();
         Long memberId = memberService.join(member1);
 
         // when
@@ -128,12 +123,7 @@ public class MemberJpaServiceTest {
     @DisplayName("등록한 회원 ID 값과 조회한 회원 ID 값이 일치해야 성공")
     void testJoin() {
         // given
-        JoinRequestDto member1 = new JoinRequestDto(
-            "테스트1",
-            "test1@test.ttt",
-            "Rkskekfk1!",
-            "Rkskekfk1!"
-        );
+        JoinRequestDto member1 = getTestJoinRequestDto();
 
         // when
         Long newMemberId = memberService.join(member1);
@@ -143,19 +133,14 @@ public class MemberJpaServiceTest {
         log.info("lastMemberId: {}", lastMemberId);
 
         // then
-        assertThat(newMemberId).isEqualTo(lastMemberId);
+        assertEquals(newMemberId, lastMemberId, "등록한 회원 ID 값과 조회한 회원 ID 값이 일치해야 한다.");
     }
 
     @Test
     @DisplayName("입력한 이름 값과 수정 결과의 이름 값이 일치해야 성공")
     void testEdit() {
         // given
-        JoinRequestDto member1 = new JoinRequestDto(
-            "테스트1",
-            "test1@test.ttt",
-            "Rkskekfk1!",
-            "Rkskekfk1!"
-        );
+        JoinRequestDto member1 = getTestJoinRequestDto();
         Long memberId1 = memberService.join(member1);
 
         // when
@@ -189,12 +174,7 @@ public class MemberJpaServiceTest {
     @DisplayName("삭제한 데이터를 다시 조회 시도했으므로, '데이터가 존재하지 않습니다' 예외가 발생해야 성공")
     void testDelete() {
         // given
-        JoinRequestDto member1 = new JoinRequestDto(
-            "테스트1",
-            "test1@test.ttt",
-            "Rkskekfk1!",
-            "Rkskekfk1!"
-        );
+        JoinRequestDto member1 = getTestJoinRequestDto();
         Long memberId = memberService.join(member1);
         log.info("memberId for delete test: {}", memberId);
 
@@ -206,5 +186,14 @@ public class MemberJpaServiceTest {
         // then
         assertThat(e.getMessage())
             .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
+    }
+
+    private JoinRequestDto getTestJoinRequestDto() {
+        return new JoinRequestDto(
+            "테스트1",
+            "test1@test.ttt",
+            "Rkskekfk1!",
+            "Rkskekfk1!"
+        );
     }
 }

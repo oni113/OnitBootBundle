@@ -9,15 +9,16 @@ import org.springframework.util.SerializationUtils;
 
 public class CookieUtil {
 
-    public static String getCookieValue(HttpServletRequest request, String cookieName) {
+    public static String getCookieValue(HttpServletRequest request, String cookieName)
+        throws IllegalAccessException {
         Cookie[] cookies = request.getCookies();
         if (cookies == null || cookies.length == 0) {
             return "";
         }
 
         return
-            Arrays.stream(cookies).filter(c -> c.getName().equals(cookieName)).findAny().get()
-                .getValue();
+            Arrays.stream(cookies).filter(c -> c.getName().equals(cookieName)).findAny()
+                .orElseThrow(IllegalAccessException::new).getValue();
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value,

@@ -32,7 +32,7 @@ public record BatchJobExecutionDto(
             batchJobExecution.getExitMessage(),
             batchJobExecution.getLastUpdated(),
             new BatchJobExecutionContextDto(batchJobExecution.getBatchJobExecutionContext()),
-            new ArrayList<BatchJobExecutionParamDto>() {
+            new ArrayList<>() {
                 @Override
                 public BatchJobExecutionParamDto get(int index) {
                     return new BatchJobExecutionParamDto(

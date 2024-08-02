@@ -38,5 +38,5 @@ public class BatchJobInstance {
 
     @OneToMany(mappedBy = "batchJobInstance")
     @JsonIgnoreProperties({"batchJobInstance"})
-    List<BatchJobExecution> batchJobExecutions = new ArrayList<BatchJobExecution>();
+    List<BatchJobExecution> batchJobExecutions = new ArrayList<>();
 }

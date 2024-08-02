@@ -40,7 +40,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // 1. 쿠키에서 토큰 읽음
-        String token = CookieUtil.getCookieValue(request, "auth_req");
+        String token;
+        try {
+            token = CookieUtil.getCookieValue(request, "auth_req");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         log.debug("== cookie token: {}", token);
 
         // 2. 헤더에서 토큰 읽음

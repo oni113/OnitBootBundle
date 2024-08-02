@@ -42,7 +42,7 @@ public class Board {
 
     @JsonIgnoreProperties({"board"})
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    List<Comment> comments = new ArrayList<Comment>();
+    List<Comment> comments = new ArrayList<>();
 
     public void addComment(Comment comment) {
         comments.add(comment);

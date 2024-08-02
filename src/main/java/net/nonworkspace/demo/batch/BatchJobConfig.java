@@ -85,7 +85,7 @@ public class BatchJobConfig extends DefaultBatchConfiguration {
 
     private ItemReader<Integer> secondChunkReader() {
         Integer[] array = {1, 2, 3,4};
-        return new ListItemReader<Integer>(Arrays.asList(array));
+        return new ListItemReader<>(Arrays.asList(array));
     }
 
     private ItemWriter<Integer> secondChunkWriter() {

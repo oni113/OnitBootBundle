@@ -1,6 +1,8 @@
 package net.nonworkspace.demo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -41,17 +43,19 @@ class RecruitServiceTest {
             recruitService.registerRecruit(testNewRecruitViewDto);
         }
         List<RecruitDto> firstPageResult = recruitService.getPage(null, 1, 6);
-        assertThat(firstPageResult.size()).isEqualTo(6);
+        assertEquals(firstPageResult.size(), 6, "첫번째 페이지의 데이터 갯수는 6이어야 한다");
         List<RecruitDto> secondPageResult = recruitService.getPage(null, 2, 6);
-        assertThat(secondPageResult.size()).isEqualTo(1);
-        firstPageResult.stream().filter(f -> f.recruitId().equals(secondPageResult.get(0).recruitId()))
+        assertEquals(secondPageResult.size(), 1, "두번째 페이지의 데이터 갯수는 1이어야 한다");
+        firstPageResult.stream()
+            .filter(f -> f.recruitId().equals(secondPageResult.get(0).recruitId()))
             .findFirst().ifPresent(f -> {
-                log.error("페이지 데이터 중복 발생!");
+                log.error("첫번째 페이지 데이터 중에 두번째 페이지 데이터가 존재하면 안된다");
                 fail();
             });
     }
 
     @Test
+    @DisplayName("리크루트 1건 등록 후 조회한 결과에서 리크루트 식별자와 회사 식별자 값이 null 이 아니면 성공")
     void registerRecruit() {
         // given
         RecruitViewDto testNewRecruitViewDto = getTestRecruitViewDto();
@@ -62,11 +66,12 @@ class RecruitServiceTest {
         RecruitViewDto result = recruitService.getRecruit(recruitId);
 
         // then
-        assertThat(recruitId).isNotNull();
-        assertThat(result.company().companyId()).isNotNull();
+        assertNotNull(recruitId, "등록 결과로 리턴받은 recruitId 값이 null 이면 안된다");
+        assertNotNull(result.company().companyId(), "조회 결과의 companyId 값이 null 이면 안된다");
     }
 
     @Test
+    @DisplayName("회사 1건 등록 후 조회한 결과에서 회사 식별자 값과 등록일시 값이 null 이 아니면 성공")
     void registerCompany() {
         // given
         CompanyDto companyDto = new CompanyDto(
@@ -82,31 +87,15 @@ class RecruitServiceTest {
         log.debug("companyId: {}", companyId);
         Company company = recruitService.getCompany(companyId);
         // then
-        assertThat(companyId).isNotNull();
-        assertThat(company.getCreateDate()).isNotNull();
+        assertNotNull(companyId, "회사 식별자 값이 null 이 아니어야 한다");
+        assertNotNull(company.getCreateDate(), "회사 등록일시 값이 null 이 아니어야 한다");
     }
 
     @Test
     @DisplayName("회사, 리크루트 등록하고 리크루트 id 으로 조회되면 성공")
     void getRecruit() {
         // given
-        CompanyDto companyDto = new CompanyDto(
-            null,
-            "NewTek Solutions",
-            "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
-            "aaa@aaa.ccc",
-            "123123123"
-        );
-
-        RecruitViewDto recruitViewDto = new RecruitViewDto(
-            null,
-            RecruitType.FULL_TIME,
-            "Senior React Developer",
-            "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
-            Salary.$125K_150K,
-            "Boston, MA",
-            companyDto
-        );
+        RecruitViewDto recruitViewDto = getTestRecruitViewDto();
 
         Long recruitId = recruitService.registerRecruit(recruitViewDto);
         log.debug("getRecruit() recruitId: {}", recruitId);
@@ -117,9 +106,10 @@ class RecruitServiceTest {
         log.debug("getRecruit() companyId: {}", result.company().companyId());
 
         // then
-        assertThat(result).isNotNull();
-        assertThat(result.recruitId()).isEqualTo(recruitId);
-        assertThat(result.company().companyId()).isNotNull();
+        assertThat(result).as("조회 결과가 null 이면 안된다").isNotNull();
+        assertThat(result.recruitId()).as("조회 결과의 식별자 값이 등록 결과로 리턴한 recruitId 값과 동일해야 한다")
+            .isEqualTo(recruitId);
+        assertThat(result.company().companyId()).as("조회 결과의 회사 식별자 값이 null 이면 안된다").isNotNull();
     }
 
     @Test
@@ -155,7 +145,8 @@ class RecruitServiceTest {
         RecruitViewDto editResult = recruitService.getRecruit(editRecruitId);
 
         // then
-        assertThat(recruitId).isEqualTo(editRecruitId);
+        assertThat(recruitId).as("리크루트 식별자가 수정 완료한 결과로 리턴받은 식별자 값과 동일해야 한다")
+            .isEqualTo(editRecruitId);
         assertThat(editResult.title()).isEqualTo(editRecruitDto.title());
         assertThat(editResult.company().companyId()).isEqualTo(editCompanyDto.companyId());
         assertThat(editResult.company().companyName()).isEqualTo(editCompanyDto.companyName());
@@ -185,14 +176,7 @@ class RecruitServiceTest {
             CommonBizExceptionCode.DATA_NOT_FOUND.getMessage());
     }
 
-    private static RecruitViewDto getTestRecruitViewDto() {
-        CompanyDto companyDto = new CompanyDto(
-            null,
-            "NewTek Solutions",
-            "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
-            "aaa@aaa.ccc",
-            "123123123"
-        );
+    private RecruitViewDto getTestRecruitViewDto() {
 
         return new RecruitViewDto(
             null,
@@ -201,7 +185,13 @@ class RecruitServiceTest {
             "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as React or Angular.",
             Salary.$70K_80K,
             "Boston, MA",
-            companyDto
+            new CompanyDto(
+                null,
+                "NewTek Solutions",
+                "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
+                "aaa@aaa.ccc",
+                "123123123"
+            )
         );
     }
 }
