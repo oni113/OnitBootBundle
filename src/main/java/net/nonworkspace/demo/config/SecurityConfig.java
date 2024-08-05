@@ -35,7 +35,7 @@ public class SecurityConfig {
                     csrfConfig.disable();
                 }).headers((headerConfig) -> {
                     headerConfig.frameOptions(frameOptions -> {
-                        frameOptions.sameOrigin();
+                        frameOptions.disable();// .sameOrigin();
                     }).addHeaderWriter(
                             new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"));
                 }).cors((cors) -> {

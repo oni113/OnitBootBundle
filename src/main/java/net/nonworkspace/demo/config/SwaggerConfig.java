@@ -24,7 +24,7 @@ public class SwaggerConfig {
         .scheme("bearer")
         .bearerFormat("JWT")
         .in(In.HEADER)
-        .name("Authorization");
+        .name(AUTH_TOKEN_HEADER);
 
     @Bean
     public GroupedOpenApi anonymousAPI() {
@@ -33,7 +33,9 @@ public class SwaggerConfig {
                 (c) -> c.info(new Info().title("anonymous API")
                     .description("아무나 다 쓸 수 있는 API").version("1.0.0"))
             )
-            .pathsToMatch(new String[]{"/api/**", "/login", "/login/**"})
+            .pathsToMatch(
+                new String[]{"/api/recruit", "/api/recruit/**", "/api/auth/**", "/api/member",
+                    "/api/member/**", "/api/board", "/api/board/**"})
             .build();
     }
 
@@ -47,7 +49,7 @@ public class SwaggerConfig {
                     .components(
                         new Components()
                             .addSchemas("UserInfoDto", new Schema<UserInfoDto>())
-                            .addSecuritySchemes("userSecurityScheme", securityScheme))
+                            .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
             .pathsToMatch(new String[]{"/user/**"})
             .build();
@@ -63,7 +65,7 @@ public class SwaggerConfig {
                     .components(
                         new Components()
                             .addSchemas("BatchJobExecutionDto", new Schema<BatchJobExecutionDto>())
-                            .addSecuritySchemes("adminSecurityScheme", securityScheme))
+                            .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
             .pathsToMatch(new String[]{"/admin/**", "/batch", "/batch/**"})
             .build();

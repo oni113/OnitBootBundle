@@ -13,7 +13,7 @@ public class AdminController {
 
     @GetMapping("/")
     public ResponseEntity<String> adminIndex(@Parameter(hidden = true) @RequestHeader(
-            name = "Authorization", required = false) String token) throws Exception {
+            name = "Authorization") String token) throws Exception {
         return ResponseEntity.ok("관리자용 API 접근 성공!");
     }
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
 import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
 import net.nonworkspace.demo.domain.dto.user.LoginRequestDto;
 import net.nonworkspace.demo.service.AuthenticationService;
@@ -42,9 +43,13 @@ public class SignController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> signIn(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<CommonResponseDto> signIn(
+        @Valid @RequestBody LoginRequestDto loginRequestDto) {
         String token = authenticationService.getLoginToken(loginRequestDto);
-        CookieUtil.addCookie(response, "auth_req", token, expireTime);
-        return ResponseEntity.status(HttpStatus.OK).body("signed OK!");
+        CookieUtil.addCookie(response, "auth-req", token, expireTime);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto(
+            1L,
+            "로그인 성공"
+        ));
     }
 }

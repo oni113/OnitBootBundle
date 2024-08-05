@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +23,8 @@ import net.nonworkspace.demo.model.MemberVO;
 
 @SpringBootTest
 @Transactional
+@Slf4j
 public class MemberServiceTest {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private MemberService memberService;
@@ -78,7 +78,7 @@ public class MemberServiceTest {
         Exception e = assertThrows(CommonBizException.class, () -> memberService.join(member2));
 
         // then
-        assertThat(e.getMessage())
+        assertThat(e.getMessage()).
                 .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE).getMessage());
     }
 
@@ -118,7 +118,7 @@ public class MemberServiceTest {
         Exception e1 = assertThrows(CommonBizException.class, () -> {
             memberService.join(member1);
         });
-        logger.debug("passwd test1: " + e1.getMessage());
+        log.debug("passwd test1: " + e1.getMessage());
 
         MemberVO member2 = new MemberVO();
         member2.setName("테스트2");
@@ -127,7 +127,7 @@ public class MemberServiceTest {
         Exception e2 = assertThrows(CommonBizException.class, () -> {
             memberService.join(member2);
         });
-        logger.debug("passwd test2: " + e2.getMessage());
+        log.debug("passwd test2: " + e2.getMessage());
 
         MemberVO member3 = new MemberVO();
         member3.setName("테스트3");
@@ -136,7 +136,7 @@ public class MemberServiceTest {
         Exception e3 = assertThrows(CommonBizException.class, () -> {
             memberService.join(member3);
         });
-        logger.debug("passwd test3: " + e3.getMessage());
+        log.debug("passwd test3: " + e3.getMessage());
 
         MemberVO member4 = new MemberVO();
         member4.setName("테스트4");
@@ -145,7 +145,7 @@ public class MemberServiceTest {
         Exception e4 = assertThrows(CommonBizException.class, () -> {
             memberService.join(member4);
         });
-        logger.debug("passwd test4: " + e4.getMessage());
+        log.debug("passwd test4: " + e4.getMessage());
 
         MemberVO member5 = new MemberVO();
         member5.setName("테스트5");
@@ -193,10 +193,10 @@ public class MemberServiceTest {
 
         // when
         Long newMemberId = memberService.join(member1);
-        logger.info("newMemberId: " + newMemberId);
+        log.info("newMemberId: " + newMemberId);
         Optional<MemberVO> lastMember = Optional.ofNullable(memberService.findMember(newMemberId));
         Long lastMemberId = lastMember.get().getMemberId();
-        logger.info("lastMemberId: " + lastMemberId);
+        log.info("lastMemberId: " + lastMemberId);
 
         // then
         assertThat(newMemberId).isEqualTo(lastMemberId);
@@ -249,7 +249,7 @@ public class MemberServiceTest {
         member1.setMemberPassword("Rkskekfk1#");
         memberService.join(member1);
         Long memberId = member1.getMemberId();
-        logger.info("memberId for delete test: " + memberId);
+        log.info("memberId for delete test: " + memberId);
 
         // when
         memberService.deleteMember(memberId);

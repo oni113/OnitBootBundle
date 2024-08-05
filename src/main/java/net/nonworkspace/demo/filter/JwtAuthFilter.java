@@ -40,26 +40,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // 1. 쿠키에서 토큰 읽음
-        String token;
-        try {
-            token = CookieUtil.getCookieValue(request, "auth_req");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        String serverToken = CookieUtil.getCookieValue(request, "auth-req");
+        log.debug("== server token: {}", serverToken);
+
+        if (!jwtProvider.verify(serverToken)) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
-        log.debug("== cookie token: {}", token);
 
         // 2. 헤더에서 토큰 읽음
         String header = request.getHeader("Authorization");
         log.debug("== header Authorization: {} ===", header);
-        if (token.isEmpty() && header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7);
-        }
 
-        if (!jwtProvider.verify(token)) {
+        String clientToken = "";
+
+        if (header == null || header.isEmpty()) {
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
 
-        Map<String, Object> claimsFromToken = jwtProvider.getClaims(token);
+        if (header.startsWith("Bearer ")) {
+            clientToken = header.substring(7);
+            log.debug("== client token: {}", clientToken);
+        }
+
+        if (!jwtProvider.verify(clientToken)) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
+        }
+
+        if (!serverToken.equals(clientToken)) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
+        }
+
+        Map<String, Object> claimsFromToken = jwtProvider.getClaims(serverToken);
         Long userId = Long.parseLong(claimsFromToken.get("userId").toString());
 
         log.debug("userId from claimsFromToken: {}", userId);
