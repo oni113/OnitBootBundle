@@ -134,8 +134,8 @@ public class RecruitService {
         Company company = companyRepository.findById(recruit.getCompany().getId())
             .orElseThrow(() -> new CommonBizException(
                 CommonBizExceptionCode.DATA_NOT_FOUND));
-        companyRepository.delete(company);
         recruitRepository.delete(recruit);
+        companyRepository.delete(company);
         return 1L;
     }
 
