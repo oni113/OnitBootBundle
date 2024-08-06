@@ -11,6 +11,7 @@ import net.nonworkspace.demo.domain.dto.user.LoginRequestDto;
 import net.nonworkspace.demo.service.AuthenticationService;
 import net.nonworkspace.demo.service.MemberJpaService;
 import net.nonworkspace.demo.utils.CookieUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,10 @@ public class SignController {
 
     private final MemberJpaService memberJpaService;
 
-    private final HttpServletRequest request;
-
     private final HttpServletResponse response;
+
+    @Value("${custom.jwt.cookie}")
+    private String tokenCookieName;
 
     @Value("${jwt.expiration_time}")
     private int expireTime;
@@ -45,11 +47,19 @@ public class SignController {
     @PostMapping("/signin")
     public ResponseEntity<CommonResponseDto> signIn(
         @Valid @RequestBody LoginRequestDto loginRequestDto) {
-        String token = authenticationService.getLoginToken(loginRequestDto);
-        CookieUtil.addCookie(response, "auth-req", token, expireTime);
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto(
-            1L,
-            "로그인 성공"
-        ));
+        try {
+            String token = authenticationService.getLoginToken(loginRequestDto);
+            CookieUtil.addCookie(response, tokenCookieName, token, expireTime);
+            return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto(
+                1L,
+                "로그인 성공"
+            ));
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CommonResponseDto(
+                -1L,
+                "로그인 실패"
+            ));
+        }
     }
 }

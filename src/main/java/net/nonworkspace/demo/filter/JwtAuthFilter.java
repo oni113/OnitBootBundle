@@ -14,6 +14,7 @@ import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.security.jwt.JwtProvider;
 import net.nonworkspace.demo.service.DemoUserDetailService;
 import net.nonworkspace.demo.utils.CookieUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     private final DemoUserDetailService demoUserDetailService;
+
+    @Value("${custom.jwt.cookie}")
+    private final String tokenCookieName;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -40,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // 1. 쿠키에서 토큰 읽음
-        String serverToken = CookieUtil.getCookieValue(request, "auth-req");
+        String serverToken = CookieUtil.getCookieValue(request, tokenCookieName);
         log.debug("== server token: {}", serverToken);
 
         if (!jwtProvider.verify(serverToken)) {

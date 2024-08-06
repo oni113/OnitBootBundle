@@ -10,4 +10,5 @@ spring:
                
 custom:    
     jwt:    
-        secretKey: #{your secret key value}    
+        secretKey: #{your secret key value}
+        cookie: #{your cookie name}

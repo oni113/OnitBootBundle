@@ -1,6 +1,7 @@
 package net.nonworkspace.demo.config;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,9 @@ public class SecurityConfig {
     private final DemoUserDetailService demoUserDetailService;
 
     private final JwtProvider jwtProvider;
+
+    @Value("${custom.jwt.cookie}")
+    private String tokenCookieName;
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -76,7 +80,7 @@ public class SecurityConfig {
                 })
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))    // never create session
-                .addFilterBefore(new JwtAuthFilter(jwtProvider, demoUserDetailService),
+                .addFilterBefore(new JwtAuthFilter(jwtProvider, demoUserDetailService, tokenCookieName),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
