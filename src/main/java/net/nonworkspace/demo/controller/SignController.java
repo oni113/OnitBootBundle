@@ -1,5 +1,6 @@
 package net.nonworkspace.demo.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -15,8 +16,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +33,8 @@ public class SignController {
     private final AuthenticationService authenticationService;
 
     private final MemberJpaService memberJpaService;
+
+    private final HttpServletRequest request;
 
     private final HttpServletResponse response;
 
@@ -59,6 +65,24 @@ public class SignController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CommonResponseDto(
                 -1L,
                 "로그인 실패"
+            ));
+        }
+    }
+
+    @DeleteMapping("/signout")
+    public ResponseEntity<CommonResponseDto> signOut(@Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token) {
+        try {
+            CookieUtil.deleteCookie(request, response, tokenCookieName);
+            return ResponseEntity.status(HttpStatus.OK).body(new CommonResponseDto(
+                1L,
+                "로그아웃 성공"
+            ));
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CommonResponseDto(
+                -1L,
+                "로그아웃 실패"
             ));
         }
     }
