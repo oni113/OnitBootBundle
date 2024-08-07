@@ -75,7 +75,9 @@ public class SecurityConfig {
                             .requestMatchers("/", "/batch").hasRole("ADMIN")
                             .requestMatchers("/", "/batch/**").hasRole("ADMIN")
                             .requestMatchers("/", "/user/**").hasRole("USER")
-                            .requestMatchers("/", "/api/**").permitAll().anyRequest()
+                            .requestMatchers("/", "/api/**").permitAll()
+                            .requestMatchers(HttpMethod.DELETE, "/api/auth/signout").authenticated()
+                            .anyRequest()
                             .authenticated();
                 })
                 .sessionManagement((sessionManagement) -> sessionManagement

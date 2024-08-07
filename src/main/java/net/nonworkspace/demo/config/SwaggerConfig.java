@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import java.util.List;
 import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
+import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
 import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +35,7 @@ public class SwaggerConfig {
                     .description("아무나 다 쓸 수 있는 API").version("1.0.0"))
             )
             .pathsToMatch(
-                new String[]{"/api/recruit", "/api/recruit/**", "/api/auth/**", "/api/member",
+                new String[]{"/api/recruit", "/api/recruit/**", "/api/auth/signup", "/api/auth/signin", "/api/member",
                     "/api/member/**", "/api/board", "/api/board/**"})
             .build();
     }
@@ -48,10 +49,11 @@ public class SwaggerConfig {
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
                     .components(
                         new Components()
+                            .addSchemas("commonResponseDto", new Schema<CommonResponseDto>())
                             .addSchemas("UserInfoDto", new Schema<UserInfoDto>())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
-            .pathsToMatch(new String[]{"/user/**"})
+            .pathsToMatch(new String[]{"/user/**", "/api/auth/signout"})
             .build();
     }
 
@@ -64,6 +66,7 @@ public class SwaggerConfig {
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
                     .components(
                         new Components()
+                            .addSchemas("commonResponseDto", new Schema<CommonResponseDto>())
                             .addSchemas("BatchJobExecutionDto", new Schema<BatchJobExecutionDto>())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
