@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/board")
+// TODO : convert return Object: Entity to Dto
 public class BoardController {
 
     private final BoardService boardService;
@@ -43,8 +44,8 @@ public class BoardController {
 
     @Operation(summary = "게시물 등록", description = "게시물 데이터를 등록한다.")
     @PostMapping("/new")
-    public Long postBoard(@RequestBody Board boarad) {
-        return boardService.post(boarad);
+    public Long postBoard(@RequestBody Board board) {
+        return boardService.post(board);
     }
 
     @Operation(summary = "댓글 등록", description = "게시물의 댓글 데이터를 등록한다.")

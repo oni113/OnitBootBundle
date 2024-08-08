@@ -3,6 +3,7 @@ package net.nonworkspace.demo.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import net.nonworkspace.demo.domain.Role;
+import net.nonworkspace.demo.utils.StringUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,12 +44,12 @@ public class MemberJpaService {
         member.setEmail(joinDto.email());
         validateDuplicateEmail(member);
 
-        if (!joinDto.password().equals(joinDto.rePassword())) {
-            throw new CommonBizException(CommonBizExceptionCode.PASSWORD_INPUT_NOT_MATCHED);
+        if (!StringUtil.isEmail(joinDto.email())) {
+            throw new CommonBizException(CommonBizExceptionCode.INVALID_EMAIL_FORMAT);
         }
 
-        if (!PasswordUtil.isPassword(joinDto.password())) {
-            throw new CommonBizException(CommonBizExceptionCode.INVALID_PASSWORD_FORMAT);
+        if (!joinDto.password().equals(joinDto.rePassword())) {
+            throw new CommonBizException(CommonBizExceptionCode.PASSWORD_INPUT_NOT_MATCHED);
         }
 
         member.setName(joinDto.name());

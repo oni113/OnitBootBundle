@@ -11,6 +11,7 @@ import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
 import net.nonworkspace.demo.service.RecruitService;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,7 +77,8 @@ public class RecruitController {
             return ResponseEntity.ok(new CommonResponseDto(recruitId, "수정 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
-            return ResponseEntity.ok(new CommonResponseDto(-1L, "수정 실패: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new CommonResponseDto(-1L, "수정 실패: " + e.getMessage()));
         }
     }
 
@@ -87,7 +89,8 @@ public class RecruitController {
                 new CommonResponseDto(recruitService.deleteRecruit(recruitId), "삭제 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
-            return ResponseEntity.ok(new CommonResponseDto(-1L, "삭제 실패: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new CommonResponseDto(-1L, "삭제 실패: " + e.getMessage()));
         }
     }
 

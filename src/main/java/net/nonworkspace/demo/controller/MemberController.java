@@ -31,6 +31,7 @@ import net.nonworkspace.demo.service.MemberService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/member")
+// TODO : convert return Object: Entity to Dto
 public class MemberController {
 
     public final MemberService memberService;

@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +76,7 @@ public class MemberServiceTest {
         Exception e = assertThrows(CommonBizException.class, () -> memberService.join(member2));
 
         // then
-        assertThat(e.getMessage()).
-                .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE).getMessage());
+        assertThat(e.getMessage()).isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE).getMessage());
     }
 
     @Test
@@ -115,37 +112,29 @@ public class MemberServiceTest {
         member1.setName("테스트1");
         member1.setEmail("test1@test.ttt");
         member1.setMemberPassword(alpha);
-        Exception e1 = assertThrows(CommonBizException.class, () -> {
-            memberService.join(member1);
-        });
-        log.debug("passwd test1: " + e1.getMessage());
+        Exception e1 = assertThrows(CommonBizException.class, () -> memberService.join(member1));
+        log.debug("passwd test1: {}", e1.getMessage());
 
         MemberVO member2 = new MemberVO();
         member2.setName("테스트2");
         member2.setEmail("test2@test.ttt");
         member2.setMemberPassword(numeric);
-        Exception e2 = assertThrows(CommonBizException.class, () -> {
-            memberService.join(member2);
-        });
-        log.debug("passwd test2: " + e2.getMessage());
+        Exception e2 = assertThrows(CommonBizException.class, () -> memberService.join(member2));
+        log.debug("passwd test2: {}", e2.getMessage());
 
         MemberVO member3 = new MemberVO();
         member3.setName("테스트3");
         member3.setEmail("test3@test.ttt");
         member3.setMemberPassword(specialchar);
-        Exception e3 = assertThrows(CommonBizException.class, () -> {
-            memberService.join(member3);
-        });
-        log.debug("passwd test3: " + e3.getMessage());
+        Exception e3 = assertThrows(CommonBizException.class, () -> memberService.join(member3));
+        log.debug("passwd test3: {}", e3.getMessage());
 
         MemberVO member4 = new MemberVO();
         member4.setName("테스트4");
         member4.setEmail("test4@test.ttt");
         member4.setMemberPassword(tooShort);
-        Exception e4 = assertThrows(CommonBizException.class, () -> {
-            memberService.join(member4);
-        });
-        log.debug("passwd test4: " + e4.getMessage());
+        Exception e4 = assertThrows(CommonBizException.class, () -> memberService.join(member4));
+        log.debug("passwd test4: {}", e4.getMessage());
 
         MemberVO member5 = new MemberVO();
         member5.setName("테스트5");
@@ -174,9 +163,7 @@ public class MemberServiceTest {
         Long nomemberId = -999L;
 
         // when
-        Exception e = assertThrows(CommonBizException.class, () -> {
-            memberService.findMember(nomemberId);
-        });
+        Exception e = assertThrows(CommonBizException.class, () -> memberService.findMember(nomemberId));
 
         // then
         assertEquals(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage(), e.getMessage());
@@ -193,10 +180,10 @@ public class MemberServiceTest {
 
         // when
         Long newMemberId = memberService.join(member1);
-        log.info("newMemberId: " + newMemberId);
+        log.info("newMemberId: {}", newMemberId);
         Optional<MemberVO> lastMember = Optional.ofNullable(memberService.findMember(newMemberId));
         Long lastMemberId = lastMember.get().getMemberId();
-        log.info("lastMemberId: " + lastMemberId);
+        log.info("lastMemberId: {}", lastMemberId);
 
         // then
         assertThat(newMemberId).isEqualTo(lastMemberId);
@@ -230,9 +217,7 @@ public class MemberServiceTest {
         noMember.setName("테스트1");
 
         // when
-        Exception e = assertThrows(CommonBizException.class, () -> {
-            memberService.editMember(noMember);
-        });
+        Exception e = assertThrows(CommonBizException.class, () -> memberService.editMember(noMember));
 
         // then
         assertThat(e.getMessage())
@@ -249,13 +234,11 @@ public class MemberServiceTest {
         member1.setMemberPassword("Rkskekfk1#");
         memberService.join(member1);
         Long memberId = member1.getMemberId();
-        log.info("memberId for delete test: " + memberId);
+        log.info("memberId for delete test: {}", memberId);
 
         // when
         memberService.deleteMember(memberId);
-        Exception e = assertThrows(CommonBizException.class, () -> {
-            memberService.findMember(memberId);
-        });
+        Exception e = assertThrows(CommonBizException.class, () -> memberService.findMember(memberId));
 
         // then
         assertThat(e.getMessage())
