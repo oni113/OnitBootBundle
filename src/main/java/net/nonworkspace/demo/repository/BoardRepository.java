@@ -61,6 +61,8 @@ public class BoardRepository {
 
     public void deleteComment(Long boardId, Long commentId) {
         Comment comment = em.find(Comment.class, commentId);
-        em.remove(comment);
+        if (comment.getBoard().getBoardId().equals(boardId)) {
+            em.remove(comment);
+        }
     }
 }

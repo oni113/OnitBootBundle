@@ -3,6 +3,8 @@ package net.nonworkspace.demo.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,6 +24,7 @@ import net.nonworkspace.demo.domain.embeddable.WriteInfo;
 @Entity
 @SequenceGenerator(name = "board_id_generator", sequenceName = "board_board_id_seq",
         initialValue = 1, allocationSize = 1)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     @Id
@@ -46,5 +49,16 @@ public class Board {
 
     public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+    public static Board createBoard(Long boardId, String title, String content, Long writerId) {
+        Board board = new Board();
+        board.setBoardId(boardId);
+        board.setTitle(title);
+        board.setContent(content);
+        WriteInfo writer = new WriteInfo();
+        writer.setWriterId(writerId);
+        board.setWriter(writer);
+        return board;
     }
 }

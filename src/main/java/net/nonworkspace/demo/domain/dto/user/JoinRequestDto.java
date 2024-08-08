@@ -5,10 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import net.nonworkspace.demo.exception.common.CommonBizException;
-import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
-import net.nonworkspace.demo.utils.PasswordUtil;
-import net.nonworkspace.demo.utils.StringUtil;
 
 @Schema(title = "AUTH_REQ_01 : 회원 가입 요청 DTO")
 public record JoinRequestDto(
@@ -30,15 +26,4 @@ public record JoinRequestDto(
     String rePassword
 ) {
 
-    public JoinRequestDto(String name, String email, String password, String rePassword) {
-        this.name = name;
-        this.email = email;
-        /*
-        if (!password.equals(rePassword)) {
-            throw new CommonBizException(CommonBizExceptionCode.PASSWORD_INPUT_NOT_MATCHED);
-        }
-         */
-        this.password = password;
-        this.rePassword = rePassword;
-    }
 }
