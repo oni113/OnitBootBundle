@@ -63,6 +63,7 @@ public class SecurityConfig {
                             .requestMatchers("/", "/login").permitAll()
                             .requestMatchers("/", "/login/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api-docs").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api-docs/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api-docs.yaml").permitAll()
                             .requestMatchers(HttpMethod.GET, "/v*/api-docs/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/v*/api-docs.yaml").permitAll()

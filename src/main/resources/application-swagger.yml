@@ -12,5 +12,6 @@ springdoc:
         display-request-duration: true
         groups-order: asc
         operations-sorter: method
+        doc-expansion: none
     cache:
         disabled: true
