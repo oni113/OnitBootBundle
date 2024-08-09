@@ -38,7 +38,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if (!(requestURI.startsWith("/user/") || requestURI.startsWith("/admin/")
-            || requestURI.startsWith("/batch/"))) {
+            || requestURI.startsWith("/batch/") || requestURI.startsWith("/api/auth/signout"))) {
             filterChain.doFilter(request, response);
             return;
         }
