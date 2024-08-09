@@ -54,5 +54,4 @@ public record DemoUserDetails(UserInfoDto userInfoDto) implements UserDetails {
     public boolean isEnabled() {
         return userInfoDto.isEnabled();
     }
-
 }

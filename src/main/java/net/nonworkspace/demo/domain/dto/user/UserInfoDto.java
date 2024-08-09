@@ -18,7 +18,8 @@ public record UserInfoDto(
     boolean isAccountNonExpired,
     boolean isAccountNonLocked,
     boolean isCredentialsNonExpired,
-    boolean isEnabled
+    boolean isEnabled,
+    boolean hasAdminRole
 ) {
 
     public UserInfoDto(Member member) {
@@ -33,7 +34,9 @@ public record UserInfoDto(
             true,
             true,
             true,
-            true
+            true,
+            member.getRoles().stream().filter(r -> r.getRoleName().equals("ADMIN")).findAny()
+                .isPresent()
         );
     }
 }
