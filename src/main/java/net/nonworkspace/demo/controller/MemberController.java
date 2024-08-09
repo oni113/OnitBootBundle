@@ -1,36 +1,37 @@
 package net.nonworkspace.demo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
+import net.nonworkspace.demo.domain.dto.member.MemberDto;
+import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
+import net.nonworkspace.demo.service.MemberJpaService;
+import net.nonworkspace.demo.service.MemberService;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.domain.Member;
-import net.nonworkspace.demo.model.MemberVO;
-import net.nonworkspace.demo.service.MemberJpaService;
-import net.nonworkspace.demo.service.MemberService;
-
 @Tag(name = "회원 API", description = "회원 정보를 처리하는 API 설명")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/admin/member")
+@Slf4j
 // TODO : convert return Object: Entity to Dto
 public class MemberController {
 
@@ -45,7 +46,7 @@ public class MemberController {
             responseCode = "200",
             description = "회원 목록",
             content = @Content(
-                schema = @Schema(implementation = MemberVO.class),
+                schema = @Schema(implementation = MemberDto.class),
                 examples = @ExampleObject(
                     value = """
                         [
@@ -73,40 +74,39 @@ public class MemberController {
         )
     })
     @GetMapping("")
-    public List<MemberVO> getMemberList(@RequestParam(name = "name", required = false) String name) {
-        MemberVO member = new MemberVO();
-        member.setName(name);
-        // return memberJpaService.findMembers(name);
-        return memberService.findMembers(name);
-    }
-
-    @Operation(summary = "회원 등록", description = "회원 데이터를 등록한다.")
-    @PostMapping("/new")
-    public Long postMember(@RequestBody MemberVO member) {
-        // return memberJpaService.join(member);
-        return memberService.join(member);
+    public List<MemberDto> getMemberPage(@Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token,
+        @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") int pageSize,
+        @RequestParam(name = "name", required = false) String name) {
+        return memberJpaService.getPage(name, pageNo, pageSize);
     }
 
     @Operation(summary = "회원 조회)", description = "회원 정보를 조회한다.")
     @Parameter(name = "memberId", description = "회원 ID")
     @GetMapping("/{memberId}")
-    public Optional<Member> getMemember(@PathVariable(name = "memberId", required = true) Long memberId) {
-        return Optional.of(memberJpaService.findMember(memberId));
-    }
-
-    @Operation(summary = "회원 정보 수정", description = "회원 데이터를 수정한다.")
-    @Parameter(name = "memberId", description = "회원 ID")
-    @PutMapping("/{memberId}")
-    public Member editMember(@PathVariable(name = "memberId", required = true) Long memberId,
-            @RequestBody Member member) {
-        member.setMemberId(memberId);
-        return memberJpaService.editMember(member);
+    public MemberViewDto getMember(@Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token,
+        @PathVariable(name = "memberId") Long memberId) {
+        return memberJpaService.findMember(memberId);
     }
 
     @Operation(summary = "회원 삭제", description = "회원 데이터를 삭제한다.")
     @Parameter(name = "memberId", description = "회원 ID")
     @DeleteMapping("/{memberId}")
-    public int deleteMember(@PathVariable(name = "memberId", required = true) Long memberId) {
-        return memberJpaService.deleteMember(memberId);
+    public ResponseEntity<CommonResponseDto> deleteMember(@Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token, @PathVariable(name = "memberId") Long memberId) {
+        try {
+            return ResponseEntity.ok(
+                new CommonResponseDto(
+                    memberJpaService.deleteMember(memberId),
+                    "회원 삭제 성공"
+                )
+            );
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new CommonResponseDto(-1L, "삭제 실패: " + e.getMessage()));
+        }
     }
 }

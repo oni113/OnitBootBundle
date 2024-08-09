@@ -15,6 +15,7 @@ import net.nonworkspace.demo.security.jwt.JwtProvider;
 import net.nonworkspace.demo.service.DemoUserDetailService;
 import net.nonworkspace.demo.utils.CookieUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         log.debug("== server token: {}", serverToken);
 
         if (!jwtProvider.verify(serverToken)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
 
@@ -58,6 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String clientToken = "";
 
         if (header == null || header.isEmpty()) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
 
@@ -67,10 +70,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (!jwtProvider.verify(clientToken)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
 
         if (!serverToken.equals(clientToken)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
 

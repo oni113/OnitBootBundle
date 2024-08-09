@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import net.nonworkspace.demo.domain.Member;
 import net.nonworkspace.demo.domain.Password;
 import net.nonworkspace.demo.domain.Role;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -44,6 +46,32 @@ public class MemberRepository {
         return result;
     }
 
+    public List<Member> findAll(String name, Pageable pageable) {
+        List<Member> result;
+        int firstResult = pageable.getPageNumber() * pageable.getPageSize();
+
+        // solve sort
+        String sortQuery = createSortQuery(pageable);
+        String query =
+            "select m from Member m " + (!sortQuery.isEmpty() ? sortQuery : "");
+
+        if (name != null && !name.isEmpty()) {
+            query = "select m from Member m where m.name like CONCAT('%', :name, '%') " + (
+                !sortQuery.isEmpty() ? sortQuery : "");
+            result = em.createQuery(query, Member.class)
+                .setParameter("name", name)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+        } else {
+            result = em.createQuery(query, Member.class)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+        }
+        return result;
+    }
+
     public Optional<Member> findByEmail(String email) {
         List<Member> result = em.createQuery("select m from Member m where email = :email",
                 Member.class)
@@ -64,5 +92,37 @@ public class MemberRepository {
     public Long saveRole(Role role) {
         em.persist(role);
         return role.getId();
+    }
+
+    public List<Password> findPasswordByMemberId(Long memberId) {
+        List<Password> result = em.createQuery(
+                "select p from Password p where p.member.memberId = :memberId", Password.class)
+            .setParameter("memberId", memberId).getResultList();
+        return result;
+    }
+
+    public List<Role> findRoleByMemberId(Long memberId) {
+        List<Role> result = em.createQuery(
+                "select r from Role r where r.member.memberId = :memberId", Role.class)
+            .setParameter("memberId", memberId).getResultList();
+        return result;
+    }
+
+    private static String createSortQuery(Pageable pageable) {
+        String sortQuery = "";
+        Sort sort = pageable.getSort();
+        StringBuilder builder = new StringBuilder("");
+        if (sort.isSorted()) {
+            builder.append(" order by ");
+            sort.forEach(s ->
+                builder.append("m.")
+                    .append(s.getProperty())
+                    .append(" ")
+                    .append(s.getDirection().name())
+                    .append(" ,")
+            );
+            sortQuery = builder.substring(0, builder.length() - 2); // remove last comma
+        }
+        return sortQuery;
     }
 }

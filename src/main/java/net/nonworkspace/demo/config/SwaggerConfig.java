@@ -2,7 +2,11 @@ package net.nonworkspace.demo.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.EmailSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
@@ -10,6 +14,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import java.util.List;
 import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
+import net.nonworkspace.demo.domain.dto.member.MemberDto;
+import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
 import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +41,7 @@ public class SwaggerConfig {
                     .description("아무나 다 쓸 수 있는 API").version("1.0.0"))
             )
             .pathsToMatch(
-                new String[]{"/api/recruit", "/api/recruit/**", "/api/auth/signup", "/api/auth/signin", "/api/member",
-                    "/api/member/**", "/api/board", "/api/board/**"})
+                new String[]{"/api/recruit", "/api/recruit/**", "/api/auth/signup", "/api/auth/signin", "/api/board", "/api/board/**"})
             .build();
     }
 
@@ -49,7 +54,7 @@ public class SwaggerConfig {
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
                     .components(
                         new Components()
-                            .addSchemas("commonResponseDto", new Schema<CommonResponseDto>())
+                            .addSchemas("CommonResponseDto", new Schema<CommonResponseDto>())
                             .addSchemas("UserInfoDto", new Schema<UserInfoDto>())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
@@ -66,8 +71,15 @@ public class SwaggerConfig {
                     .security(List.of(new SecurityRequirement().addList(AUTH_TOKEN_HEADER)))
                     .components(
                         new Components()
-                            .addSchemas("commonResponseDto", new Schema<CommonResponseDto>())
+                            // TODO : How to convert Dto record type to Schema<T> automatically?
+                            .addSchemas("CommonResponseDto", new Schema<CommonResponseDto>())
                             .addSchemas("BatchJobExecutionDto", new Schema<BatchJobExecutionDto>())
+                            .addSchemas("MemberDto", new Schema<>().type("object")
+                                .addProperty("memberId", new NumberSchema())
+                                .addProperty("name", new StringSchema())
+                                .addProperty("email", new EmailSchema())
+                                .addProperty("createDate", new DateTimeSchema()))
+                            .addSchemas("MemberViewDto", new Schema<MemberViewDto>())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
             .pathsToMatch(new String[]{"/admin/**", "/batch", "/batch/**"})

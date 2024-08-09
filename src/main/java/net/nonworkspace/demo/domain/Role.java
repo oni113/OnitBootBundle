@@ -9,12 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
 
     @Id
@@ -31,5 +33,12 @@ public class Role {
     public void setMember(Member member) {
         this.member = member;
         member.getRoles().add(this);
+    }
+
+    public static Role createRole(Member member, String roleName) {
+        Role role = new Role();
+        role.setMember(member);
+        role.setRoleName(roleName);
+        return role;
     }
 }
