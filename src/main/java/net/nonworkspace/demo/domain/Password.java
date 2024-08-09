@@ -1,7 +1,5 @@
 package net.nonworkspace.demo.domain;
 
-import java.time.LocalDateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -15,15 +13,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import net.nonworkspace.demo.domain.embeddable.CreateInfo;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Data
 @Table(name = "member_password")
 @SequenceGenerator(name = "password_id_generator",
-        sequenceName = "member_password_member_password_id_seq", initialValue = 1,
-        allocationSize = 1)
+    sequenceName = "member_password_member_password_id_seq", initialValue = 1,
+    allocationSize = 1)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
     @Id
@@ -51,5 +54,13 @@ public class Password {
     public void setMember(Member member) {
         this.member = member;
         member.getPasswords().add(this);
+    }
+
+    public static Password createPassword(Member member, String encodedPassword) {
+        Password password = new Password();
+        password.setMember(member);
+        password.setMemberPassword(encodedPassword);
+        password.setExpireDate(LocalDateTime.now().plusMonths(6));
+        return password;
     }
 }
