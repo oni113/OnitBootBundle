@@ -110,7 +110,7 @@ public class RecruitService {
         company.setContactEmail(recruitViewDto.company().contactEmail());
         company.setContactPhone(recruitViewDto.company().contactPhone());
         company.setUpdateDate(LocalDateTime.now());
-        companyRepository.save(company);
+        // companyRepository.save(company); // why done right? : 변경 감지
 
         Recruit recruit = recruitRepository.findById(recruitViewDto.recruitId())
             .orElseThrow(() -> new CommonBizException(
@@ -121,7 +121,7 @@ public class RecruitService {
         recruit.setSalary(recruitViewDto.salary());
         recruit.setLocation(recruitViewDto.location());
         recruit.setUpdateDate(LocalDateTime.now());
-        recruitRepository.save(recruit);
+       //  recruitRepository.save(recruit); // why done right? : 변경 감지
 
         return recruit.getId();
     }

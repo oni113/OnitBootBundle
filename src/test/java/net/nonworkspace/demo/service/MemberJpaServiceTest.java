@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.Member;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
+import net.nonworkspace.demo.domain.dto.member.RoleDto;
 import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
@@ -148,26 +151,34 @@ public class MemberJpaServiceTest {
     @DisplayName("입력한 이름 값과 수정 결과의 이름 값이 일치해야 성공")
     void testEdit() {
         // given
-        JoinRequestDto member1 = getTestJoinRequestDto();
-        Long memberId1 = memberJpaService.join(member1);
+        JoinRequestDto origin = getTestJoinRequestDto();
+        Long originMemberId = memberJpaService.join(origin);
 
         // when
-        Member member2 = new Member();
-        member2.setMemberId(memberId1);
-        member2.setName("테스트2");
+        Member editableMember = memberRepository.find(originMemberId);
+        editableMember.setName("테스트2");
 
         // then
-        assertThat(member2.getName()).isEqualTo(
-            Optional.of(memberJpaService.editMember(member2)).get().getName());
+        assertThat(editableMember.getName()).isEqualTo(
+            Optional.of(memberJpaService.editMember(new MemberViewDto(editableMember))).get().name());
     }
 
     @Test
     @DisplayName("수정할 데이터의 회원 ID 값이 존재하지 않는 값 (-999) 이므로, '데이터가 존재하지 않습니다' 예외가 발생해야 성공")
     void testEditException() {
         // given
-        Member noMember = new Member();
-        noMember.setMemberId(-999L);
-        noMember.setName("테스트1");
+        List<RoleDto> roles = new ArrayList<>();
+        roles.add(new RoleDto(
+            -9999L,
+            "USER"
+        ));
+        MemberViewDto noMember = new MemberViewDto(
+            -999L,
+            "테스트1",
+            "test@test.ttt",
+            LocalDateTime.now(),
+            roles
+        );
 
         // when
         Exception e = assertThrows(CommonBizException.class, () ->

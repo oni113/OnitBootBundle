@@ -69,15 +69,15 @@ public class MemberJpaService {
     }
 
     @Transactional
-    public Member editMember(Member member) {
-        Member target = memberRepository.find(member.getMemberId());
+    public MemberViewDto editMember(MemberViewDto member) {
+        Member target = memberRepository.find(member.memberId());
         if (target == null) {
             throw new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND);
         }
-        target.setName(member.getName());
-        memberRepository.saveMember(target);
+        target.setName(member.name());
+        // memberRepository.saveMember(target); // 변경 감지
 
-        return target;
+        return new MemberViewDto(target);
     }
 
     @Transactional
