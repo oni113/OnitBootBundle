@@ -16,6 +16,9 @@ import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
+import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
+import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;
+import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
 import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -80,6 +83,9 @@ public class SwaggerConfig {
                                 .addProperty("email", new EmailSchema())
                                 .addProperty("createDate", new DateTimeSchema()))
                             .addSchemas("MemberViewDto", new Schema<MemberViewDto>())
+                            .addSchemas("RecruitDto", new Schema<RecruitDto>())
+                            .addSchemas("RecruitViewDto", new Schema<RecruitViewDto>())
+                            .addSchemas("CompanyDto", new Schema<CompanyDto>())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
             .pathsToMatch(new String[]{"/admin/**", "/batch", "/batch/**"})

@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/member")
 @Slf4j
-// TODO : convert return Object: Entity to Dto
 public class MemberController {
 
     public final MemberService memberService;
