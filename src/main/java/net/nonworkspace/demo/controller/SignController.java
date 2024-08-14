@@ -1,6 +1,7 @@
 package net.nonworkspace.demo.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "회원 가입/로그인 API", description = "회원 가입 및 로그인 API")
 @RestController
 @RequestMapping("/api/auth/")
 @RequiredArgsConstructor

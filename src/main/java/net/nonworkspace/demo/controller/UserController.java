@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.DemoUserDetails;
 import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
@@ -18,15 +19,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "USER API", description = "사용자 기능 API")
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-
-    @GetMapping("/")
-    public ResponseEntity<String> userIndex() throws Exception {
-        return ResponseEntity.ok("유저용 API 접근 성공!");
-    }
 
     @Operation(summary = "로그인 사용자 정보 조회", description = "로그인한 사용자 정보를 조회한다.")
     @ApiResponses(

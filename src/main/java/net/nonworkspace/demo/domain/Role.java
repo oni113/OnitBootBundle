@@ -1,6 +1,7 @@
 package net.nonworkspace.demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,8 +23,10 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
+    @Schema(description = "권한 ID")
     private Long id;
 
+    @Schema(description = "권한 이름")
     private String roleName;
 
     @ManyToOne(/* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER)

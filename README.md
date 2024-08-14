@@ -1,5 +1,5 @@
 application-private.yml   
-
+    
 spring:    
     datasource:    
         url: #{your database connect url}    
@@ -12,3 +12,5 @@ custom:
     jwt:    
         secretKey: #{your secret key value}    
         cookie: #{your cookie name}    
+    api-doc:    
+        version: #{your api-doc version}    
