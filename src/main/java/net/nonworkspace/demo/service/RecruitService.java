@@ -1,6 +1,5 @@
 package net.nonworkspace.demo.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +48,6 @@ public class RecruitService {
         Long companyId = registerCompany(recruitViewDto.company());
 
         Recruit recruit = Recruit.createRecruit(
-            null,
             recruitViewDto.type(),
             recruitViewDto.title(),
             recruitViewDto.description(),
@@ -70,7 +68,6 @@ public class RecruitService {
     @Transactional
     public Long registerCompany(CompanyDto companyDto) {
         Company company = Company.createCompany(
-            null,
             companyDto.companyName(),
             companyDto.description(),
             companyDto.contactEmail(),
@@ -83,8 +80,7 @@ public class RecruitService {
 
     public RecruitViewDto getRecruit(Long recruitId) {
         Recruit result = recruitRepository.findById(recruitId)
-            .orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND));
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         return new RecruitViewDto(result);
     }
 
@@ -103,25 +99,14 @@ public class RecruitService {
     @Transactional
     public Long modifyRecruit(RecruitViewDto recruitViewDto) {
         Company company = companyRepository.findById(recruitViewDto.company().companyId())
-            .orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND));
-        company.setCompanyName(recruitViewDto.company().companyName());
-        company.setDescription(recruitViewDto.company().description());
-        company.setContactEmail(recruitViewDto.company().contactEmail());
-        company.setContactPhone(recruitViewDto.company().contactPhone());
-        company.setUpdateDate(LocalDateTime.now());
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
+        company.modifyCompany(recruitViewDto.company());
         // companyRepository.save(company); // why done right? : 변경 감지
 
         Recruit recruit = recruitRepository.findById(recruitViewDto.recruitId())
-            .orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND));
-        recruit.setType(recruitViewDto.type());
-        recruit.setTitle(recruitViewDto.title());
-        recruit.setDescription(recruitViewDto.description());
-        recruit.setSalary(recruitViewDto.salary());
-        recruit.setLocation(recruitViewDto.location());
-        recruit.setUpdateDate(LocalDateTime.now());
-       //  recruitRepository.save(recruit); // why done right? : 변경 감지
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
+        recruit.modifyRecruit(recruitViewDto);
+        //  recruitRepository.save(recruit); // why done right? : 변경 감지
 
         return recruit.getId();
     }
@@ -129,11 +114,9 @@ public class RecruitService {
     @Transactional
     public Long deleteRecruit(Long recruitId) {
         Recruit recruit = recruitRepository.findById(recruitId)
-            .orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND));
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         Company company = companyRepository.findById(recruit.getCompany().getId())
-            .orElseThrow(() -> new CommonBizException(
-                CommonBizExceptionCode.DATA_NOT_FOUND));
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         recruitRepository.delete(recruit);
         companyRepository.delete(company);
         return 1L;

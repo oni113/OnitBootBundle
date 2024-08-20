@@ -16,10 +16,12 @@ import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recruit {
@@ -62,16 +64,24 @@ public class Recruit {
         }
     }
 
-    public static Recruit createRecruit(Long id, RecruitType type, String title, String description,
+    public static Recruit createRecruit(RecruitType type, String title, String description,
         Salary salary, String location, Company company) {
         Recruit recruit = new Recruit();
-        recruit.setId(id);
-        recruit.setType(type);
-        recruit.setTitle(title);
-        recruit.setDescription(description);
-        recruit.setSalary(salary);
-        recruit.setLocation(location);
-        recruit.setCompany(company);
+        recruit.type = type;
+        recruit.title = title;
+        recruit.description = description;
+        recruit.salary = salary;
+        recruit.location = location;
+        recruit.company = company;
         return recruit;
+    }
+
+    public void modifyRecruit(RecruitViewDto recruitViewDto) {
+        this.type = recruitViewDto.type();
+        this.title = recruitViewDto.title();
+        this.description = recruitViewDto.description();
+        this.salary = recruitViewDto.salary();
+        this.location = recruitViewDto.location();
+        this.updateDate = LocalDateTime.now();
     }
 }

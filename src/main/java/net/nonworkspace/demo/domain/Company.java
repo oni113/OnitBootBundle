@@ -15,10 +15,12 @@ import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Data
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
@@ -58,15 +60,22 @@ public class Company {
         }
     }
 
-    public static Company createCompany(Long id, String companyName, String description,
+    public static Company createCompany(String companyName, String description,
         String contactEmail, String contactPhone, Recruit recruit) {
         Company company = new Company();
-        company.setId(id);
-        company.setCompanyName(companyName);
-        company.setDescription(description);
-        company.setContactEmail(contactEmail);
-        company.setContactPhone(contactPhone);
-        company.setRecruit(recruit);
+        company.companyName = companyName;
+        company.description = description;
+        company.contactEmail = contactEmail;
+        company.contactPhone = contactPhone;
+        company.recruit = recruit;
         return company;
+    }
+
+    public void modifyCompany(CompanyDto companyDto) {
+        this.companyName  = companyDto.companyName();
+        this.description = companyDto.description();
+        this.contactEmail = companyDto.contactEmail();
+        this.contactPhone = companyDto.contactPhone();
+        this.updateDate = LocalDateTime.now();
     }
 }
