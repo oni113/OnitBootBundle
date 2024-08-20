@@ -1,18 +1,17 @@
 package net.nonworkspace.demo.repository;
 
-import java.util.List;
-import org.springframework.stereotype.Repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.Board;
 import net.nonworkspace.demo.domain.Comment;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-// TODO : refactoring - convert to interface extends JpaRepository
 public class BoardRepository {
 
     private final EntityManager em;
@@ -33,12 +32,10 @@ public class BoardRepository {
     }
 
     public List<Board> findAll(String title) {
-
         String query =
-                "select b from Board b where b.title like CONCAT('%', :title, '%') order by b.boardId desc";
+            "select b from Board b where b.title like CONCAT('%', :title, '%') order by b.boardId desc";
         List<Board> result =
-                em.createQuery(query, Board.class).setParameter("title", title).getResultList();
-
+            em.createQuery(query, Board.class).setParameter("title", title).getResultList();
         return result;
     }
 
@@ -55,8 +52,8 @@ public class BoardRepository {
 
     public Comment findComment(Long boardId, Long commentId) {
         Board board = em.find(Board.class, boardId);
-        return board.getComments().stream().filter(c -> c.getCommentId() == commentId).findAny()
-                .orElse(null);
+        return board.getComments().stream().filter(c -> c.getCommentId().equals(commentId)).findAny()
+            .orElse(null);
     }
 
     public void deleteComment(Long boardId, Long commentId) {

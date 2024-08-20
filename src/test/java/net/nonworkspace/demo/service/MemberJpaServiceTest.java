@@ -164,7 +164,7 @@ public class MemberJpaServiceTest {
     }
 
     @Test
-    @DisplayName("수정할 데이터의 회원 ID 값이 존재하지 않는 값 (-999) 이므로, '데이터가 존재하지 않습니다' 예외가 발생해야 성공")
+    @DisplayName("수정할 데이터의 회원 ID 값이 존재하지 않는 값 (-999) 이므로, '회원 정보가 존재하지 않습니다.' 예외가 발생해야 성공")
     void testEditException() {
         // given
         List<RoleDto> roles = new ArrayList<>();
@@ -186,7 +186,7 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(e.getMessage())
-            .isEqualTo(new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND).getMessage());
+            .isEqualTo(new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER).getMessage());
     }
 
     @Test

@@ -16,9 +16,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
@@ -84,7 +81,7 @@ public class BatchJobConfig extends DefaultBatchConfiguration {
     }
 
     private ItemReader<Integer> secondChunkReader() {
-        Integer[] array = {1, 2, 3,4};
+        Integer[] array = {1, 2, 3, 4};
         return new ListItemReader<>(Arrays.asList(array));
     }
 

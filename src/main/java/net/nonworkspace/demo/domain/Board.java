@@ -51,9 +51,8 @@ public class Board {
         comments.add(comment);
     }
 
-    public static Board createBoard(Long boardId, String title, String content, Long writerId) {
+    public static Board createBoard(String title, String content, Long writerId) {
         Board board = new Board();
-        board.setBoardId(boardId);
         board.setTitle(title);
         board.setContent(content);
         WriteInfo writer = new WriteInfo();

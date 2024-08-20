@@ -12,6 +12,7 @@ import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +67,13 @@ public class AuthenticationService {
             .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         UserInfoDto result = userDetails.userInfoDto();
         return result;
+    }
+
+    public UserInfoDto getLoginUserInfo() {
+        if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
+        }
+        return ((DemoUserDetails) SecurityContextHolder.getContext().getAuthentication()
+            .getPrincipal()).userInfoDto();
     }
 }

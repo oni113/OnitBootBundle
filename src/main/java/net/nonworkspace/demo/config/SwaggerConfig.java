@@ -8,6 +8,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import java.util.List;
 import net.nonworkspace.demo.domain.dto.batch.BatchJobExecutionDto;
+import net.nonworkspace.demo.domain.dto.board.BoardFormDto;
+import net.nonworkspace.demo.domain.dto.board.CommentDto;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
@@ -59,6 +61,8 @@ public class SwaggerConfig {
                         new Components()
                             .addSchemas("CommonResponseDto", CommonResponseDto.getSchema())
                             .addSchemas("UserInfoDto", UserInfoDto.getSchema())
+                            .addSchemas("BoardFormDto", BoardFormDto.getSchema())
+                            .addSchemas("CommentDto", CommentDto.getSchema())
                             .addSecuritySchemes(AUTH_TOKEN_HEADER, securityScheme))
             )
             .pathsToMatch(new String[]{"/user/**", "/api/auth/signout"})

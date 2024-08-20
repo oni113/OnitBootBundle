@@ -17,8 +17,6 @@ import net.nonworkspace.demo.utils.MapUtil;
 @Component
 public class JwtProvider {
 
-    private SecretKey cachedSecretKey;
-
     @Value("${custom.jwt.secretKey}")
     private String secretKeyPlain;
     

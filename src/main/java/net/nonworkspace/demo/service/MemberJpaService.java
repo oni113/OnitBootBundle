@@ -70,30 +70,19 @@ public class MemberJpaService {
 
     @Transactional
     public MemberViewDto editMember(MemberViewDto member) {
-        Member target = memberRepository.find(member.memberId());
-        if (target == null) {
-            throw new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND);
-        }
+        Member target = Optional.ofNullable(memberRepository.find(member.memberId()))
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         target.setName(member.name());
         // memberRepository.saveMember(target); // 변경 감지
-
         return new MemberViewDto(target);
     }
 
     @Transactional
     public Long deleteMember(Long memberId) {
-        Member target = memberRepository.find(memberId);
-        if (target == null) {
-            throw new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER);
-        }
+        Member target = Optional.ofNullable(memberRepository.find(memberId))
+            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         memberRepository.delete(target.getMemberId());
         return 1L;
-    }
-
-    private void validateDuplicateEmail(Member member) {
-        memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
-            throw new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE);
-        });
     }
 
     public List<MemberDto> getPage(String name, int pageNo, int pageSize) {
@@ -103,5 +92,11 @@ public class MemberJpaService {
         List<MemberDto> result = new ArrayList<>();
         members.forEach(m -> result.add(new MemberDto(m)));
         return result;
+    }
+
+    private void validateDuplicateEmail(Member member) {
+        memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
+            throw new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE);
+        });
     }
 }

@@ -21,14 +21,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "BOARD API", description = "게시판 정보를 처리하는 API 설명")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/board")
 @Slf4j
 public class BoardController {
 
@@ -36,7 +35,7 @@ public class BoardController {
 
     @Operation(summary = "게시판 리스트 조회", description = "게시판 전체 데이터를 리스트로 조회한다.")
     @Parameter(name = "title", description = "제목에 값을 포함하는 문자열")
-    @GetMapping("")
+    @GetMapping("/api/board")
     public List<BoardDto> getBoardList(
         @RequestParam(name = "title", required = false) String title) {
         return boardService.findBoards(title);
@@ -44,15 +43,16 @@ public class BoardController {
 
     @Operation(summary = "게시물 조회", description = "게시물 단건 데이터를 조회한다.")
     @Parameter(name = "boardId", description = "게시물 ID")
-    @GetMapping("/{boardId}")
+    @GetMapping("/api/board/{boardId}")
     public BoardViewDto getBoard(@PathVariable(name = "boardId") Long boardId) {
         return boardService.findBoard(boardId);
     }
 
     @Operation(summary = "게시물 등록", description = "게시물 데이터를 등록한다.")
-    @PostMapping("/new")
+    @PostMapping("/user/board/new")
     public ResponseEntity<CommonResponseDto> postBoard(
-        @Valid @RequestBody BoardFormDto boardFormDto) {
+        @Valid @RequestBody BoardFormDto boardFormDto, @Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(new CommonResponseDto(
                 boardService.post(boardFormDto),
@@ -61,19 +61,17 @@ public class BoardController {
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new CommonResponseDto(
-                    -1L,
-                    e.getMessage()
-                )
+                new CommonResponseDto(-1L, e.getMessage())
             );
         }
     }
 
     @Operation(summary = "댓글 등록", description = "게시물의 댓글 데이터를 등록한다.")
-    @PostMapping("/{boardId}/comment")
+    @PostMapping("/user/board/{boardId}/comment")
     public ResponseEntity<CommonResponseDto> postComment(
         @PathVariable(name = "boardId") Long boardId,
-        @Valid @RequestBody CommentDto commentDto) {
+        @Valid @RequestBody CommentDto commentDto, @Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(new CommonResponseDto(
                 boardService.postComment(boardId, commentDto),
@@ -82,10 +80,7 @@ public class BoardController {
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new CommonResponseDto(
-                    -1L,
-                    e.getMessage()
-                )
+                new CommonResponseDto(-1L, e.getMessage())
             );
         }
     }
@@ -93,39 +88,35 @@ public class BoardController {
     @Operation(summary = "댓글 삭제", description = "댓글 데이터를 삭제한다.")
     @Parameter(name = "boardId", description = "게시물 ID")
     @Parameter(name = "commentId", description = "댓글 ID")
-    @DeleteMapping("/{boardId}/comment/{commentId}")
+    @DeleteMapping("/user/board/{boardId}/comment/{commentId}")
     public ResponseEntity<CommonResponseDto> deleteComment(
         @PathVariable(name = "boardId") Long boardId,
-        @PathVariable(name = "commentId") Long commentId) {
+        @PathVariable(name = "commentId") Long commentId, @Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(
                 new CommonResponseDto(boardService.deleteComment(boardId, commentId), "댓글 삭제 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new CommonResponseDto(
-                    -1L,
-                    e.getMessage()
-                )
+                new CommonResponseDto(-1L, e.getMessage())
             );
         }
     }
 
     @Operation(summary = "게시물 삭제", description = "게시물 데이터를 삭제한다.")
     @Parameter(name = "boardId", description = "게시물 ID")
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/user/board/{boardId}")
     public ResponseEntity<CommonResponseDto> deleteBoard(
-        @PathVariable(name = "boardId") Long boardId) {
+        @PathVariable(name = "boardId") Long boardId, @Parameter(hidden = true) @RequestHeader(
+        name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(
                 new CommonResponseDto(boardService.deleteBoard(boardId), "게시물 삭제 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                new CommonResponseDto(
-                    -1L,
-                    e.getMessage()
-                )
+                new CommonResponseDto(-1L, e.getMessage())
             );
         }
     }
