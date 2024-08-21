@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,7 +14,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;

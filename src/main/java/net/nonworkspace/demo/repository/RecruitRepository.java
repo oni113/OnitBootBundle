@@ -1,9 +1,8 @@
 package net.nonworkspace.demo.repository;
 
 import java.util.List;
-import net.nonworkspace.demo.domain.Company;
-import net.nonworkspace.demo.domain.Recruit;
-import net.nonworkspace.demo.domain.RecruitType;
+import net.nonworkspace.demo.domain.entity.Recruit;
+import net.nonworkspace.demo.domain.code.RecruitType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

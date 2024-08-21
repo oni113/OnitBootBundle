@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,17 +15,16 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.nonworkspace.demo.domain.embeddable.CreateInfo;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Data
+@Getter
 @Table(name = "member_password")
 @SequenceGenerator(name = "password_id_generator",
-    sequenceName = "member_password_member_password_id_seq", initialValue = 1,
-    allocationSize = 1)
+    sequenceName = "member_password_member_password_id_seq", allocationSize = 1)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
@@ -59,8 +58,9 @@ public class Password {
     public static Password createPassword(Member member, String encodedPassword) {
         Password password = new Password();
         password.setMember(member);
-        password.setMemberPassword(encodedPassword);
-        password.setExpireDate(LocalDateTime.now().plusMonths(6));
+        password.memberPassword = encodedPassword;
+        password.expireDate = LocalDateTime.now().plusMonths(6);
+        password.createInfo = new CreateInfo();
         return password;
     }
 }

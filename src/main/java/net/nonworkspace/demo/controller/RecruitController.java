@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.RecruitType;
+import net.nonworkspace.demo.domain.code.RecruitType;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;

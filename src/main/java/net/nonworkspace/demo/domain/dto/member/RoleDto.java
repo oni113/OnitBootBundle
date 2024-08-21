@@ -3,7 +3,7 @@ package net.nonworkspace.demo.domain.dto.member;
 import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
-import net.nonworkspace.demo.domain.Role;
+import net.nonworkspace.demo.domain.entity.Role;
 
 public record RoleDto(
     Long id,

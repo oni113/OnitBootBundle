@@ -14,7 +14,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.Member;
 import net.nonworkspace.demo.security.jwt.JwtProvider;
 
 @SpringBootTest

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import net.nonworkspace.demo.domain.Company;
+import net.nonworkspace.demo.domain.entity.Company;
 
 @Schema(title = "RECRUIT_REQ_02 : 회사 DTO")
 public record CompanyDto(

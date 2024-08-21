@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import net.nonworkspace.demo.domain.Member;
+import net.nonworkspace.demo.domain.entity.Member;
 
 public record MemberViewDto(
     Long memberId,

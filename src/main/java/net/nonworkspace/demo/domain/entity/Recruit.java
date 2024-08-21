@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,9 +15,10 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.nonworkspace.demo.domain.code.RecruitType;
+import net.nonworkspace.demo.domain.code.Salary;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
 import org.springframework.format.annotation.DateTimeFormat;
 

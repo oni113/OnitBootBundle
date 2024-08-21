@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.domain.Member;
-import net.nonworkspace.demo.domain.Password;
-import net.nonworkspace.demo.domain.Role;
+import net.nonworkspace.demo.domain.entity.Member;
+import net.nonworkspace.demo.domain.entity.Password;
+import net.nonworkspace.demo.domain.entity.Role;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
 import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
@@ -43,19 +43,16 @@ public class MemberJpaService {
 
     @Transactional
     public Long join(JoinRequestDto joinDto) {
-        Member member = new Member();
-        member.setEmail(joinDto.email());
-        validateDuplicateEmail(member);
-
         if (!StringUtil.isEmail(joinDto.email())) {
             throw new CommonBizException(CommonBizExceptionCode.INVALID_EMAIL_FORMAT);
         }
+        validateDuplicateEmail(joinDto.email());
 
         if (!joinDto.password().equals(joinDto.rePassword())) {
             throw new CommonBizException(CommonBizExceptionCode.PASSWORD_INPUT_NOT_MATCHED);
         }
 
-        member.setName(joinDto.name());
+        Member member = Member.createJoinMember(joinDto);
         Long memberId = memberRepository.saveMember(member);
 
         member = memberRepository.find(memberId);
@@ -72,7 +69,7 @@ public class MemberJpaService {
     public MemberViewDto editMember(MemberViewDto member) {
         Member target = Optional.ofNullable(memberRepository.find(member.memberId()))
             .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
-        target.setName(member.name());
+        target.updateName(member.name());
         // memberRepository.saveMember(target); // 변경 감지
         return new MemberViewDto(target);
     }
@@ -94,8 +91,8 @@ public class MemberJpaService {
         return result;
     }
 
-    private void validateDuplicateEmail(Member member) {
-        memberRepository.findByEmail(member.getEmail()).ifPresent(m -> {
+    private void validateDuplicateEmail(String email) {
+        memberRepository.findByEmail(email).ifPresent(m -> {
             throw new CommonBizException(CommonBizExceptionCode.DATA_EMAIL_DUPLICATE);
         });
     }

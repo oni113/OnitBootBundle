@@ -1,6 +1,6 @@
 package net.nonworkspace.demo.domain.dto.user;
 
-import net.nonworkspace.demo.domain.Role;
+import net.nonworkspace.demo.domain.entity.Role;
 
 public record UserRoleDto(
     Long memberId,

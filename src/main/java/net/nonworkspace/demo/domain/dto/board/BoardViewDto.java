@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import net.nonworkspace.demo.domain.Board;
+import net.nonworkspace.demo.domain.entity.Board;
 
 @Schema(title = "BOARD_REQ_02 : 게시물 DTO")
 public record BoardViewDto(

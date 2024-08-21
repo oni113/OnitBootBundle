@@ -6,7 +6,7 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import java.time.LocalDateTime;
-import net.nonworkspace.demo.domain.Member;
+import net.nonworkspace.demo.domain.entity.Member;
 
 public record MemberDto(
     Long memberId,

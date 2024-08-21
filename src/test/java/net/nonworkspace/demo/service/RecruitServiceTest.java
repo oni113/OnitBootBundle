@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.Company;
-import net.nonworkspace.demo.domain.RecruitType;
-import net.nonworkspace.demo.domain.Salary;
+import net.nonworkspace.demo.domain.entity.Company;
+import net.nonworkspace.demo.domain.code.RecruitType;
+import net.nonworkspace.demo.domain.code.Salary;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;

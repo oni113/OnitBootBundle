@@ -12,6 +12,7 @@ import net.nonworkspace.demo.domain.dto.board.BoardFormDto;
 import net.nonworkspace.demo.domain.dto.board.BoardViewDto;
 import net.nonworkspace.demo.domain.dto.board.CommentDto;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
+import net.nonworkspace.demo.service.AuthenticationService;
 import net.nonworkspace.demo.service.BoardService;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class BoardController {
         name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(new CommonResponseDto(
-                boardService.post(boardFormDto),
+                boardService.post(boardFormDto, AuthenticationService.getLoginUserInfo()),
                 "게시물 등록 성공"
             ));
         } catch (Exception e) {
@@ -74,7 +75,8 @@ public class BoardController {
         name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(new CommonResponseDto(
-                boardService.postComment(boardId, commentDto),
+                boardService.postComment(boardId, commentDto,
+                    AuthenticationService.getLoginUserInfo()),
                 "댓글 등록 성공"
             ));
         } catch (Exception e) {
@@ -95,7 +97,9 @@ public class BoardController {
         name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(
-                new CommonResponseDto(boardService.deleteComment(boardId, commentId), "댓글 삭제 성공"));
+                new CommonResponseDto(boardService.deleteComment(boardId, commentId,
+                    AuthenticationService.getLoginUserInfo()),
+                    "댓글 삭제 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
@@ -112,7 +116,9 @@ public class BoardController {
         name = "Authorization") String token) {
         try {
             return ResponseEntity.ok(
-                new CommonResponseDto(boardService.deleteBoard(boardId), "게시물 삭제 성공"));
+                new CommonResponseDto(
+                    boardService.deleteBoard(boardId, AuthenticationService.getLoginUserInfo()),
+                    "게시물 삭제 성공"));
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(

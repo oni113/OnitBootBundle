@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -10,13 +10,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.nonworkspace.demo.domain.embeddable.WriteInfo;
 
 @Entity
-@Data
-@SequenceGenerator(name = "comment_id_generator", sequenceName = "comment_comment_id_seq", initialValue = 1, allocationSize = 1)
+@Getter
+@SequenceGenerator(name = "comment_id_generator", sequenceName = "comment_comment_id_seq", allocationSize = 1)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
@@ -32,20 +32,17 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-    
+
     public void setBoard(Board board) {
         this.board = board;
         board.getComments().add(this);
     }
 
-    public static Comment createComment(Long commentId, Board board, String content, Long writerId) {
+    public static Comment createComment(Board board, String content, Long writerId) {
         Comment comment = new Comment();
-        comment.setCommentId(commentId);
         comment.setBoard(board);
-        comment.setContent(content);
-        WriteInfo writer = new WriteInfo();
-        writer.setWriterId(writerId);
-        comment.setWriter(writer);
+        comment.content = content;
+        comment.writer = WriteInfo.create(writerId);
         return comment;
     }
 }

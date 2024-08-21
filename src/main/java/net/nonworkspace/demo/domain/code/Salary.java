@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.code;
 
 public enum Salary {
     UNDER_$50K,

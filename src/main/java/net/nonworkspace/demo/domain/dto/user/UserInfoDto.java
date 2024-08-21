@@ -8,8 +8,8 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.Member;
-import net.nonworkspace.demo.domain.Role;
+import net.nonworkspace.demo.domain.entity.Member;
+import net.nonworkspace.demo.domain.entity.Role;
 import net.nonworkspace.demo.domain.dto.member.RoleDto;
 
 @Slf4j

@@ -1,6 +1,5 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,11 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@Data
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
@@ -41,7 +39,7 @@ public class Role {
     public static Role createRole(Member member, String roleName) {
         Role role = new Role();
         role.setMember(member);
-        role.setRoleName(roleName);
+        role.roleName = roleName;
         return role;
     }
 }

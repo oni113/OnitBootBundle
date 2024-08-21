@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.Member;
+import net.nonworkspace.demo.domain.entity.Member;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
 import net.nonworkspace.demo.domain.dto.member.RoleDto;
@@ -145,6 +145,10 @@ public class MemberJpaServiceTest {
 
         // then
         assertEquals(newMemberId, lastMemberId, "등록한 회원 ID 값과 조회한 회원 ID 값이 일치해야 한다.");
+        assertThat(memberRepository.findPasswordByMemberId(newMemberId).size()).as(
+            "등록한 회원의 패스워드 데이터가 1건이어야 한다.").isEqualTo(1);
+        assertThat(memberRepository.findRoleByMemberId(newMemberId).get(0).getRoleName()).as(
+            "등록한 회원의  ROLE 값이 \"USER\"와 일치해야 한다.").isEqualTo("USER");
     }
 
     @Test
@@ -156,11 +160,12 @@ public class MemberJpaServiceTest {
 
         // when
         Member editableMember = memberRepository.find(originMemberId);
-        editableMember.setName("테스트2");
+        editableMember.updateName("테스트2");
 
         // then
         assertThat(editableMember.getName()).isEqualTo(
-            Optional.of(memberJpaService.editMember(new MemberViewDto(editableMember))).get().name());
+            Optional.of(memberJpaService.editMember(new MemberViewDto(editableMember))).get()
+                .name());
     }
 
     @Test
@@ -186,7 +191,8 @@ public class MemberJpaServiceTest {
 
         // then
         assertThat(e.getMessage())
-            .isEqualTo(new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER).getMessage());
+            .isEqualTo(
+                new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER).getMessage());
     }
 
     @Test

@@ -5,9 +5,9 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import net.nonworkspace.demo.domain.Recruit;
-import net.nonworkspace.demo.domain.RecruitType;
-import net.nonworkspace.demo.domain.Salary;
+import net.nonworkspace.demo.domain.entity.Recruit;
+import net.nonworkspace.demo.domain.code.RecruitType;
+import net.nonworkspace.demo.domain.code.Salary;
 
 @Schema(title = "RECRUIT_REQ_02 : 리크루트 등록/수정 DTO")
 public record RecruitViewDto(

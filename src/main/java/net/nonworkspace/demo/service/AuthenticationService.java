@@ -69,11 +69,13 @@ public class AuthenticationService {
         return result;
     }
 
-    public UserInfoDto getLoginUserInfo() {
+    public static UserInfoDto getLoginUserInfo() {
         if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
-        return ((DemoUserDetails) SecurityContextHolder.getContext().getAuthentication()
+        UserInfoDto loginUserInfo = ((DemoUserDetails) SecurityContextHolder.getContext()
+            .getAuthentication()
             .getPrincipal()).userInfoDto();
+        return loginUserInfo;
     }
 }

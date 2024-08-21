@@ -5,8 +5,8 @@ import jakarta.persistence.Query;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nonworkspace.demo.domain.Board;
-import net.nonworkspace.demo.domain.Comment;
+import net.nonworkspace.demo.domain.entity.Board;
+import net.nonworkspace.demo.domain.entity.Comment;
 import org.springframework.stereotype.Repository;
 
 @Slf4j

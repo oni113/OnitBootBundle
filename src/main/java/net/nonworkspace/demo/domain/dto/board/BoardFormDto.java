@@ -6,24 +6,22 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import net.nonworkspace.demo.domain.Board;
+import net.nonworkspace.demo.domain.entity.Board;
 
 @Schema(title = "BOARD_REQ_04 : 게시물 등록 DTO")
 public record BoardFormDto(
     @Schema(description = "게시물 ID") Long boardId,
     @NotEmpty(message = "제목을 입력해주세요.") @Schema(description = "제목") String title,
     @NotEmpty(message = "내용을 입력해주세요.") @Schema(description = "내용") String content,
-    @Schema(description = "작성자 ID") Long writerId,
     @Schema(description = "작성일시") LocalDateTime createDate,
     @Schema(description = "수정일시") LocalDateTime modifiedDate
 ) {
 
-    public BoardFormDto(String title, String content, Long writerId) {
+    public BoardFormDto(String title, String content) {
         this(
             null,
             title,
             content,
-            writerId,
             LocalDateTime.now(),
             null
         );
@@ -34,7 +32,6 @@ public record BoardFormDto(
             board.getBoardId(),
             board.getTitle(),
             board.getContent(),
-            board.getWriter().getWriterId(),
             board.getWriter().getCreateDate(),
             board.getModifiedDate()
         );
@@ -46,7 +43,6 @@ public record BoardFormDto(
             .addProperty("boardId", new NumberSchema().description("게시물 ID"))
             .addProperty("title", new StringSchema().description("제목"))
             .addProperty("content", new StringSchema().description("내용"))
-            .addProperty("writerId", new NumberSchema().description("작성자 ID"))
             .addProperty("createDate", new DateTimeSchema().description("작성일시"))
             .addProperty("modifiedDate", new DateTimeSchema().description("수정일시"));
     }

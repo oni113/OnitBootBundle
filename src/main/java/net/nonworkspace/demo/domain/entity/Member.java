@@ -1,4 +1,4 @@
-package net.nonworkspace.demo.domain;
+package net.nonworkspace.demo.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,17 +12,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
 import net.nonworkspace.demo.domain.embeddable.CreateInfo;
 
-@Data
+@Getter
 @Entity
-@SequenceGenerator(name = "member_id_generator", sequenceName = "member_member_id_seq",
-    initialValue = 1, allocationSize = 1)
-@NoArgsConstructor
-@AllArgsConstructor
+@SequenceGenerator(name = "member_id_generator", sequenceName = "member_member_id_seq", allocationSize = 1)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
@@ -46,4 +45,23 @@ public class Member {
     @JsonIgnoreProperties({"member"})
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
     private List<Role> roles = new ArrayList<>();
+
+    public static Member createMember(String name, String email) {
+        Member member = new Member();
+        member.name = name;
+        member.email = email;
+        return member;
+    }
+
+    public static Member createJoinMember(JoinRequestDto joinRequestDto) {
+        Member member = new Member();
+        member.name = joinRequestDto.name();
+        member.email = joinRequestDto.email();
+        member.createInfo = new CreateInfo();
+        return member;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

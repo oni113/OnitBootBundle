@@ -4,7 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.DemoUserDetails;
-import net.nonworkspace.demo.domain.Member;
+import net.nonworkspace.demo.domain.entity.Member;
 import net.nonworkspace.demo.domain.dto.user.UserInfoDto;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.repository.MemberRepository;

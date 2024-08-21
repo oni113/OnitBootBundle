@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import net.nonworkspace.demo.domain.Board;
+import net.nonworkspace.demo.domain.entity.Board;
 
 @Schema(title = "BOARD_REQ_01 : 게시물 목록 DTO")
 public record BoardDto(

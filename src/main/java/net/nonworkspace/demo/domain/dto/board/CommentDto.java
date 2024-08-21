@@ -5,8 +5,9 @@ import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import net.nonworkspace.demo.domain.Comment;
+import net.nonworkspace.demo.domain.entity.Comment;
 
 @Schema(title = "BOARD_REQ_03 : 댓글 DTO")
 public record CommentDto(
