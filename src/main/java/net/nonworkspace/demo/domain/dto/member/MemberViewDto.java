@@ -25,16 +25,8 @@ public record MemberViewDto(
             member.getEmail(),
             member.getCreateInfo().getCreateDate(),
             new ArrayList<>() {
-                @Override
-                public RoleDto get(final int index) {
-                    return new RoleDto(
-                        member.getRoles().get(index)
-                    );
-                }
-
-                @Override
-                public int size() {
-                    return member.getRoles().size();
+                {
+                    member.getRoles().forEach(role -> add(new RoleDto(role)));
                 }
             }
         );

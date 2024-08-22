@@ -60,8 +60,9 @@ class BoardServiceTest {
         Long boardId = boardService.post(newBoardForm, testUser1);
 
         // then
-        assertThat((boardService.findBoard(boardId))).as("등록한 게시물 ID 로 조회했을 때, Not Null이어야 한다.")
-            .isNotNull();
+        assertThat((boardService.findBoard(boardId).boardId())).as(
+                "등록한 게시물 ID 로 조회했을 때, Not Null이어야 한다.")
+            .isEqualTo(boardId);
     }
 
     @Test
@@ -95,7 +96,7 @@ class BoardServiceTest {
         });
 
         // then
-        assertThat(e.getMessage()).as("\"데이터가 존재하지 않습니다.\" 예외가 발생해야 한다").isEqualTo(
+        assertThat(e.getMessage()).as("\"접근 권한이 없습니다.\" 예외가 발생해야 한다").isEqualTo(
             CommonBizExceptionCode.ACCESS_NOT_ALLOWED.getMessage());
     }
 
@@ -130,14 +131,15 @@ class BoardServiceTest {
         Long boardId = boardService.post(newBoardForm, testUser1);
         Long newCommentId = boardService.postComment(boardId, getTestCommentDto("test comment1"),
             testUser1);
+        log.debug("new comment id: {}", newCommentId);
 
         // when
         BoardViewDto board = boardService.findBoard(boardId);
 
         // then
         assertThat(
-            board.comments().stream().filter(c -> c.commentId().equals(newCommentId))
-                .findAny()).isNotNull();
+            board.comments().stream().filter(c -> c.commentId().equals(newCommentId)).findAny()
+                .isPresent()).isTrue();
     }
 
     @Test
@@ -148,9 +150,11 @@ class BoardServiceTest {
         Long boardId = boardService.post(newBoardForm, testUser1);
         Long commentId = boardService.postComment(boardId, getTestCommentDto("test comment1"),
             testUser1);
+        boardService.postComment(boardId, getTestCommentDto("test comment2"),
+            testUser2);
         BoardViewDto board = boardService.findBoard(boardId);
         int commentCountBefore = board.comments().size();
-        log.debug("댓글 삭제 전 댓글 갯수: {}", commentCountBefore);
+        log.debug("댓글 삭제 전 댓글 갯수: {}", commentCountBefore); // 2건
 
         // when
         boardService.deleteComment(boardId, commentId, testUser1);
@@ -160,7 +164,9 @@ class BoardServiceTest {
         List<Comment> result = em.createQuery(query, Comment.class).setParameter("boardId", boardId)
             .getResultList();
         log.debug("댓글 삭제 후 댓글 갯수: {}", result.size());
-        assertThat(result.size()).isEqualTo(commentCountBefore - 1);
+        assertThat(
+            result.stream().filter(c -> c.equals(commentId)).findAny().isPresent()).isFalse();
+        assertThat(result.size()).isEqualTo(commentCountBefore - 1);    // 1건
     }
 
     @Test

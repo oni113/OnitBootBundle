@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import net.nonworkspace.demo.batch.entity.BatchJobExecution;
-import net.nonworkspace.demo.batch.entity.BatchJobExecutionContext;
 
 public record BatchJobExecutionDto(
     Long jobExecutionId,
@@ -38,15 +37,9 @@ public record BatchJobExecutionDto(
             batchJobExecution.getLastUpdated(),
             new BatchJobExecutionContextDto(batchJobExecution.getBatchJobExecutionContext()),
             new ArrayList<>() {
-                @Override
-                public BatchJobExecutionParamDto get(int index) {
-                    return new BatchJobExecutionParamDto(
-                        batchJobExecution.getBatchJobExecutionParams().get(index));
-                }
-
-                @Override
-                public int size() {
-                    return batchJobExecution.getBatchJobExecutionParams().size();
+                {
+                    batchJobExecution.getBatchJobExecutionParams()
+                        .forEach(p -> add(new BatchJobExecutionParamDto(p)));
                 }
             },
             new BatchJobInstanceDto(batchJobExecution.getBatchJobInstance())

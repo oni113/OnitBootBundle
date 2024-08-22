@@ -27,7 +27,8 @@ public class BatchJobMetaInfoService {
     public List<BatchJobExecutionDto> getBatchJobExecutions() {
         List<BatchJobExecutionDto> result = new ArrayList<>();
         // batchJobExecutionRepository.findAll().parallelStream().forEach(b -> result.add(new BatchJobExecutionDto(b)));    // transaction error!!
-        batchJobExecutionRepository.findAll().stream().forEach(b -> result.add(new BatchJobExecutionDto(b)));
+        batchJobExecutionRepository.findAll().stream()
+            .forEach(b -> result.add(new BatchJobExecutionDto(b)));
 
         return result;
     }

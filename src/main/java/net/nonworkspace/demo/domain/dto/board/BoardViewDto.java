@@ -18,6 +18,7 @@ public record BoardViewDto(
     @Schema(description = "수정일시") LocalDateTime modifiedDate,
     @Schema(description = "댓글") List<CommentDto> comments
 ) {
+
     public BoardViewDto(Board board) {
         this(
             board.getBoardId(),
@@ -27,15 +28,8 @@ public record BoardViewDto(
             board.getWriter().getCreateDate(),
             board.getModifiedDate(),
             new ArrayList<>() {
-                @Override
-                public CommentDto get(final int index) {
-                    return new CommentDto(
-                        board.getComments().get(index)
-                    );
-                }
-                @Override
-                public int size() {
-                    return board.getComments().size();
+                {
+                    board.getComments().forEach(c -> add(new CommentDto(c)));
                 }
             }
         );
