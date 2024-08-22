@@ -46,13 +46,6 @@ public class Member {
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
     private List<Role> roles = new ArrayList<>();
 
-    public static Member createMember(String name, String email) {
-        Member member = new Member();
-        member.name = name;
-        member.email = email;
-        return member;
-    }
-
     public static Member createJoinMember(JoinRequestDto joinRequestDto) {
         Member member = new Member();
         member.name = joinRequestDto.name();
