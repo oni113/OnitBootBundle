@@ -15,7 +15,7 @@ logging.level:
         org.springframework: debug
         org.hibernate.SQL: debug
         org.hibernate.type: trace
-        
+        p6spy: debug
 batch:
     scheduling:
         enabled: false
