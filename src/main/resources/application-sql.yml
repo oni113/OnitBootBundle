@@ -4,8 +4,15 @@ spring:
             ddl-auto: none
         properties:
             hibernate:
-                # show_sql: true
-                format_sql: true
+                show_sql: false #true
+                format_sql: false #true
+    datasource:
+        p6spy:
+            enable-logging: true
+            multiline: true
+            logging: slf4j
+            tracing:
+                include-parameter-values: true
         
 mybatis:
     mapper-locations: mapper/**/*.xml
