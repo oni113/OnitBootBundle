@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.domain.dto.common.ListResponse;
 import net.nonworkspace.demo.domain.entity.Company;
 import net.nonworkspace.demo.domain.code.RecruitType;
 import net.nonworkspace.demo.domain.code.Salary;
@@ -42,12 +42,12 @@ class RecruitServiceTest {
         for (int i = 0; i < 7; i++) {
             recruitService.registerRecruit(testNewRecruitViewDto);
         }
-        List<RecruitDto> firstPageResult = recruitService.getPage(null, 1, 6);
-        assertEquals(firstPageResult.size(), 6, "첫번째 페이지의 데이터 갯수는 6이어야 한다");
-        List<RecruitDto> secondPageResult = recruitService.getPage(null, 2, 6);
-        assertEquals(secondPageResult.size(), 1, "두번째 페이지의 데이터 갯수는 1이어야 한다");
-        firstPageResult.stream()
-            .filter(f -> f.recruitId().equals(secondPageResult.get(0).recruitId()))
+        ListResponse<RecruitDto> firstPageResult = recruitService.getPage(null, 1, 6);
+        assertEquals(firstPageResult.getCount(), 6, "첫번째 페이지의 데이터 갯수는 6이어야 한다");
+        ListResponse<RecruitDto> secondPageResult = recruitService.getPage(null, 2, 6);
+        assertEquals(secondPageResult.getCount(), 1, "두번째 페이지의 데이터 갯수는 1이어야 한다");
+        firstPageResult.getList().stream()
+            .filter(f -> f.recruitId().equals(secondPageResult.getList().get(0).recruitId()))
             .findFirst().ifPresent(f -> {
                 log.error("첫번째 페이지 데이터 중에 두번째 페이지 데이터가 존재하면 안된다");
                 fail();

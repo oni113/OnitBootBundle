@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.code.RecruitType;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
+import net.nonworkspace.demo.domain.dto.common.ListResponse;
 import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitDto;
 import net.nonworkspace.demo.domain.dto.recruit.RecruitViewDto;
@@ -34,7 +35,7 @@ public class RecruitController {
     private final RecruitService recruitService;
 
     @GetMapping("/api/recruit")
-    public List<RecruitDto> getRecruitPage(
+    public ListResponse<RecruitDto> getRecruitPage(
         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") int pageSize,
         @RequestParam(name = "type", required = false) RecruitType type) {
@@ -42,7 +43,7 @@ public class RecruitController {
     }
 
     @GetMapping("/api/recruit/all")
-    public List<RecruitDto> getAllRecruit(
+    public ListResponse<RecruitDto> getAllRecruit(
         @RequestParam(name = "type", required = false) RecruitType type) {
         return recruitService.getAllRecruit(type);
     }
@@ -102,7 +103,7 @@ public class RecruitController {
     }
 
     @GetMapping("/api/recruit/companies")
-    public List<CompanyDto> getCompanies() {
+    public ListResponse<CompanyDto> getCompanies() {
         return recruitService.getCompanies();
     }
 }
