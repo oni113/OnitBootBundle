@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import net.nonworkspace.demo.domain.dto.common.ListResponse;
 import net.nonworkspace.demo.domain.entity.Member;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
@@ -63,12 +64,12 @@ public class MemberJpaServiceTest {
         memberJpaService.join(member2);
 
         // when
-        List<Member> result = memberJpaService.findMembers("테스트");
+        ListResponse<MemberDto> result = memberJpaService.findMembers("테스트");
 
         // then
         assertThat(result).isNotNull();
-        assertEquals(result.size(), 2, "조회 결과가 2 건이어야 한다");
-        assertEquals(result.stream().findFirst().get().getName(), "테스트1",
+        assertEquals(result.getList().size(), 2, "조회 결과가 2 건이어야 한다");
+        assertEquals(result.getList().stream().findFirst().get().name(), "테스트1",
             "첫번째 데이터의 회원 이름이 '테스트1'이여하 한다");
     }
 
@@ -229,13 +230,13 @@ public class MemberJpaServiceTest {
         }
 
         // when
-        List<MemberDto> page1 = memberJpaService.getPage("test", 1, 6);
-        List<MemberDto> page2 = memberJpaService.getPage("test", 2, 6);
+        ListResponse<MemberDto> page1 = memberJpaService.getPage("test", 1, 6);
+        ListResponse<MemberDto> page2 = memberJpaService.getPage("test", 2, 6);
 
         // then
-        assertThat(page1.size()).as("페이지 1의 데이터 갯수는 6 과 같아야 한다").isEqualTo(6);
-        assertThat(page2.size()).as("페이지 2의 데이터 갯수는 1 과 같아야 한다").isEqualTo(1);
-        page1.stream().filter(p1 -> p1.memberId().equals(page2.get(0).memberId())).findFirst()
+        assertThat(page1.getList().size()).as("페이지 1의 데이터 갯수는 6 과 같아야 한다").isEqualTo(6);
+        assertThat(page2.getList().size()).as("페이지 2의 데이터 갯수는 1 과 같아야 한다").isEqualTo(1);
+        page1.getList().stream().filter(p1 -> p1.memberId().equals(page2.getList().get(0).memberId())).findFirst()
             .ifPresent(p -> {
                 log.error("첫번째 페이지 데이터 중에 두번째 페이지 데이터가 존재하면 안된다");
                 fail();

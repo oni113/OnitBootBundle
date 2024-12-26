@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import net.nonworkspace.demo.domain.dto.common.ListResponse;
 import net.nonworkspace.demo.domain.entity.Member;
 import net.nonworkspace.demo.domain.entity.Password;
 import net.nonworkspace.demo.domain.entity.Role;
@@ -30,9 +31,12 @@ public class MemberJpaService {
 
     private final BCryptPasswordEncoder encoder;
 
-    public List<Member> findMembers(String name) {
-        return (name == null || name.isEmpty()) ? memberRepository.findAll()
-            : memberRepository.findAll(name);
+    public ListResponse<MemberDto> findMembers(String name) {
+        List<Member> members = (name == null || name.isEmpty()) ? memberRepository.findAll()
+                : memberRepository.findAll(name);
+        List<MemberDto> result = new ArrayList<>();
+        members.forEach(m -> result.add(new MemberDto(m)));
+        return new ListResponse<>(result);
     }
 
     public MemberViewDto findMember(Long memberId) {
@@ -82,13 +86,13 @@ public class MemberJpaService {
         return 1L;
     }
 
-    public List<MemberDto> getPage(String name, int pageNo, int pageSize) {
+    public ListResponse<MemberDto> getPage(String name, int pageNo, int pageSize) {
         Sort sort = Sort.by("createInfo.createDate").descending();
         Pageable pageable = PageRequest.of((pageNo - 1), pageSize, sort);   // pageNo : zero-based
         List<Member> members = memberRepository.findAll(name, pageable);
         List<MemberDto> result = new ArrayList<>();
         members.forEach(m -> result.add(new MemberDto(m)));
-        return result;
+        return new ListResponse<>(result);
     }
 
     private void validateDuplicateEmail(String email) {

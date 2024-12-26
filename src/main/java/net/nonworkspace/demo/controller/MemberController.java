@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.dto.common.CommonResponseDto;
+import net.nonworkspace.demo.domain.dto.common.ListResponse;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
 import net.nonworkspace.demo.service.MemberJpaService;
@@ -45,23 +46,26 @@ public class MemberController {
             responseCode = "200",
             description = "회원 목록",
             content = @Content(
-                schema = @Schema(implementation = MemberDto.class),
+                schema = @Schema(implementation = ListResponse.class),
                 examples = @ExampleObject(
                     value = """
-                        [
-                            {
-                                "memberId": 1,
-                                "name": "John",
-                                "email": "john@gmail.com",
-                                "createDate": "2020-01-01",
-                            },
-                            {
-                                "memberId": 2,
-                                "name": "김누구",
-                                "email": "kim@gmail.com",
-                                "createDate": "2020-01-01",
-                            }
-                        ]
+                        {
+                            list: [
+                                {
+                                    "memberId": 1,
+                                    "name": "John",
+                                    "email": "john@gmail.com",
+                                    "createDate": "2020-01-01",
+                                },
+                                {
+                                    "memberId": 2,
+                                    "name": "김누구",
+                                    "email": "kim@gmail.com",
+                                    "createDate": "2020-01-01",
+                                }
+                            ],
+                            count: 2
+                        }
                         """
 
                 )
@@ -73,7 +77,7 @@ public class MemberController {
         )
     })
     @GetMapping("")
-    public List<MemberDto> getMemberPage(@Parameter(hidden = true) @RequestHeader(
+    public ListResponse<MemberDto> getMemberPage(@Parameter(hidden = true) @RequestHeader(
         name = "Authorization") String token,
         @RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") int pageSize,
