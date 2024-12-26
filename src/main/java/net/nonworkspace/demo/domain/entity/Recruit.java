@@ -44,7 +44,7 @@ public class Recruit {
     @Enumerated(EnumType.STRING)
     private Salary salary;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 

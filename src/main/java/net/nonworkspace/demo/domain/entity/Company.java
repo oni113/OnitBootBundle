@@ -38,7 +38,7 @@ public class Company {
 
     private String contactPhone;
 
-    @OneToOne(mappedBy = "company", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     private Recruit recruit;
 

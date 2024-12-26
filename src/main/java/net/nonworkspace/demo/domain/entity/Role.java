@@ -27,7 +27,7 @@ public class Role {
     @Schema(description = "권한 이름")
     private String roleName;
 
-    @ManyToOne(/* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER)
+    @ManyToOne(/* cascade = CascadeType.ALL, */ fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

@@ -39,11 +39,11 @@ public class Member {
     private CreateInfo createInfo = new CreateInfo();
 
     @JsonIgnoreProperties({"member"})
-    @OneToMany(mappedBy = "member", /* cascade = CascadeType.ALL, */ fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "member", /* cascade = CascadeType.ALL, */ fetch = FetchType.LAZY)
     private List<Password> passwords = new ArrayList<>();
 
     @JsonIgnoreProperties({"member"})
-    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Role> roles = new ArrayList<>();
 
     public static Member createJoinMember(JoinRequestDto joinRequestDto) {
