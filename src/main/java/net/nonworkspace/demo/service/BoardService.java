@@ -97,7 +97,7 @@ public class BoardService {
     }
 
     private void validateUserEditable(Long writerId, UserInfoDto loginUserInfo) {
-        if (!(writerId.equals(loginUserInfo.userId()) || loginUserInfo.hasAdminRole())) {
+        if (!(writerId.equals(loginUserInfo.userId()) || !loginUserInfo.hasAdminRole())) {
             throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
         }
     }
