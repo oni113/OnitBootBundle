@@ -157,3 +157,61 @@ CREATE TABLE public.company (
     update_date timestamp NULL,
     CONSTRAINT company_pk PRIMARY KEY (company_id)
 );
+
+-- public.survey definition
+
+-- Drop table
+
+-- DROP TABLE public.survey;
+
+CREATE TABLE public.survey (
+	survey_id serial4 NOT NULL,
+	title varchar NOT NULL,
+	description text NULL,
+	status varchar DEFAULT 'WAITING'::character varying NOT NULL,
+	start_date timestamp NOT NULL,
+	end_date timestamp NOT NULL,
+	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	update_date timestamp NULL,
+	CONSTRAINT survey_pk PRIMARY KEY (survey_id)
+);
+
+-- public.survey_question definition
+
+-- Drop table
+
+-- DROP TABLE public.survey_question;
+
+CREATE TABLE public.survey_question (
+	survey_question_id serial4 NOT NULL,
+	survey_id int4 NOT NULL,
+	title varchar NOT NULL,
+	description text NULL,
+	"type" varchar DEFAULT 'OBJECTIVE'::character varying NOT NULL,
+	required bool DEFAULT false NOT NULL,
+	max_selectable_objectives int4 DEFAULT 1 NOT NULL,
+	sort_order int4 DEFAULT 1 NOT NULL,
+	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	update_date timestamp NULL,
+	CONSTRAINT survey_question_pk PRIMARY KEY (survey_question_id),
+	CONSTRAINT survey_question_fk FOREIGN KEY (survey_id) REFERENCES public.survey(survey_id)
+);
+
+-- public.survey_question_objective definition
+
+-- Drop table
+
+-- DROP TABLE public.survey_question_objective;
+
+CREATE TABLE public.survey_question_objective (
+	objective_id serial4 NOT NULL,
+	survey_id int4 NOT NULL,
+	survey_question_id int4 NOT NULL,
+	objective_value varchar NOT NULL,
+	objective_text varchar NOT NULL,
+	sort_order int4 DEFAULT 1 NOT NULL,
+	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	update_date timestamp NULL,
+	CONSTRAINT survey_question_objective_pk PRIMARY KEY (objective_id),
+	CONSTRAINT survey_question_objective_fk FOREIGN KEY (survey_question_id) REFERENCES public.survey_question(survey_question_id)
+);
