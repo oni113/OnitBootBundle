@@ -248,5 +248,6 @@ CREATE TABLE public.survey_question_objective (
 	sort_order int4 DEFAULT 1 NOT NULL,
 	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	update_date timestamp NULL,
-	CONSTRAINT survey_question_objective_pk PRIMARY KEY (objective_id)
+	CONSTRAINT survey_question_objective_pk PRIMARY KEY (objective_id),
+	CONSTRAINT survey_question_objective_fk FOREIGN KEY (survey_question_id) REFERENCES public.survey_question(survey_question_id)
 );
