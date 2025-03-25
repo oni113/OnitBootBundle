@@ -176,6 +176,24 @@ CREATE TABLE public.survey (
 	CONSTRAINT survey_pk PRIMARY KEY (survey_id)
 );
 
+-- public.survey_participate definition
+
+-- Drop table
+
+-- DROP TABLE public.survey_participate;
+
+CREATE TABLE public.survey_participate (
+	participate_id serial4 NOT NULL,
+	survey_id int4 NOT NULL,
+	member_id int4 NOT NULL,
+	start_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	submit_date timestamp NULL,
+	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	update_date timestamp NULL,
+	CONSTRAINT survey_participate_pk PRIMARY KEY (participate_id),
+	CONSTRAINT survey_member_fk FOREIGN KEY (survey_id) REFERENCES public.survey(survey_id)
+);
+
 -- public.survey_question definition
 
 -- Drop table
@@ -190,11 +208,30 @@ CREATE TABLE public.survey_question (
 	"type" varchar DEFAULT 'OBJECTIVE'::character varying NOT NULL,
 	required bool DEFAULT false NOT NULL,
 	max_selectable_objectives int4 DEFAULT 1 NOT NULL,
+	max_answer_length int4 NULL,
 	sort_order int4 DEFAULT 1 NOT NULL,
 	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	update_date timestamp NULL,
 	CONSTRAINT survey_question_pk PRIMARY KEY (survey_question_id),
 	CONSTRAINT survey_question_fk FOREIGN KEY (survey_id) REFERENCES public.survey(survey_id)
+);
+
+-- public.survey_question_answer definition
+
+-- Drop table
+
+-- DROP TABLE public.survey_question_answer;
+
+CREATE TABLE public.survey_question_answer (
+	answer_id serial4 NOT NULL,
+	survey_question_id int4 NOT NULL,
+	participate_id int4 NOT NULL,
+	answer text NULL,
+	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	update_date timestamp NULL,
+	CONSTRAINT survey_question_answer_pk PRIMARY KEY (answer_id),
+	CONSTRAINT survey_question_answer_fk01 FOREIGN KEY (survey_question_id) REFERENCES public.survey_question(survey_question_id),
+	CONSTRAINT survey_question_answer_fk02 FOREIGN KEY (participate_id) REFERENCES public.survey_participate(participate_id)
 );
 
 -- public.survey_question_objective definition
@@ -207,11 +244,9 @@ CREATE TABLE public.survey_question_objective (
 	objective_id serial4 NOT NULL,
 	survey_id int4 NOT NULL,
 	survey_question_id int4 NOT NULL,
-	objective_value varchar NOT NULL,
 	objective_text varchar NOT NULL,
 	sort_order int4 DEFAULT 1 NOT NULL,
 	create_date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	update_date timestamp NULL,
-	CONSTRAINT survey_question_objective_pk PRIMARY KEY (objective_id),
-	CONSTRAINT survey_question_objective_fk FOREIGN KEY (survey_question_id) REFERENCES public.survey_question(survey_question_id)
+	CONSTRAINT survey_question_objective_pk PRIMARY KEY (objective_id)
 );
