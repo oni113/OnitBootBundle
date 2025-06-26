@@ -2,6 +2,7 @@ spring:
     jpa:
         hibernate:
             ddl-auto: none
+            default_batch_fetch_size: 10
         properties:
             hibernate:
                 show_sql: false #true

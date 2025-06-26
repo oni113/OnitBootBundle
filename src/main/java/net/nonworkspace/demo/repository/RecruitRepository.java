@@ -1,19 +1,25 @@
 package net.nonworkspace.demo.repository;
 
-import java.util.List;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import net.nonworkspace.demo.domain.dto.recruit.CompanyDto;
 import net.nonworkspace.demo.domain.entity.Recruit;
-import net.nonworkspace.demo.domain.code.RecruitType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface RecruitRepository extends JpaRepository<Recruit, Long> {
+@RequiredArgsConstructor
+public class RecruitRepository {
 
-    List<Recruit> findByTypeOrderByCreateDateDesc(RecruitType type);
+    private final EntityManager em;
 
-    List<Recruit> findAllByOrderByCreateDateDesc();
-
-    Page<Recruit> findByType(RecruitType type, Pageable pageable);
+    public List<Recruit> findAllRecruitWithCompany() {
+        return em.createQuery(
+                        "select distinct r from Recruit r"
+                                + " join fetch Company c"
+                                + " on r.company = c"
+                                + " order by r.createDate desc", Recruit.class)
+                .getResultList();
+    }
 }

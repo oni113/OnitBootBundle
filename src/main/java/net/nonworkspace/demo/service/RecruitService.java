@@ -11,6 +11,7 @@ import net.nonworkspace.demo.domain.entity.Recruit;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.repository.CompanyRepository;
+import net.nonworkspace.demo.repository.JpaRecruitRepository;
 import net.nonworkspace.demo.repository.RecruitRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class RecruitService {
 
+    private final JpaRecruitRepository jpaRecruitRepository;
+
     private final RecruitRepository recruitRepository;
 
     private final CompanyRepository companyRepository;
@@ -36,9 +39,9 @@ public class RecruitService {
         Pageable pageable = PageRequest.of((pageNo - 1), pageSize, sort);   // pageNo : zero-based
         Page<Recruit> recruits;
         if (type != null) {
-            recruits = recruitRepository.findByType(type, pageable);
+            recruits = jpaRecruitRepository.findByType(type, pageable);
         } else {
-            recruits = recruitRepository.findAll(pageable);
+            recruits = jpaRecruitRepository.findAll(pageable);
         }
         List<RecruitDto> result = new ArrayList<>();
         recruits.stream().forEach(r -> result.add(new RecruitDto(r)));
@@ -58,7 +61,7 @@ public class RecruitService {
                 companyRepository.findById(companyId).orElseThrow(() -> new CommonBizException(
                         CommonBizExceptionCode.DATA_NOT_FOUND))
         );
-        recruitRepository.save(recruit);
+        jpaRecruitRepository.save(recruit);
         return recruit.getId();
     }
 
@@ -81,7 +84,7 @@ public class RecruitService {
     }
 
     public RecruitViewDto getRecruit(Long recruitId) {
-        Recruit result = recruitRepository.findById(recruitId)
+        Recruit result = jpaRecruitRepository.findById(recruitId)
                 .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         return new RecruitViewDto(result);
     }
@@ -89,9 +92,9 @@ public class RecruitService {
     public ListResponse<RecruitDto> getAllRecruit(RecruitType type) {
         List<Recruit> recruits;
         if (type != null) {
-            recruits = recruitRepository.findByTypeOrderByCreateDateDesc(type);
+            recruits = jpaRecruitRepository.findByTypeOrderByCreateDateDesc(type);
         } else {
-            recruits = recruitRepository.findAllByOrderByCreateDateDesc();
+            recruits = recruitRepository.findAllRecruitWithCompany();
         }
         List<RecruitDto> result = new ArrayList<>();
         recruits.stream().forEach(r -> result.add(new RecruitDto(r)));
@@ -105,7 +108,7 @@ public class RecruitService {
         company.modifyCompany(recruitViewDto.company());
         // companyRepository.save(company); // why done right? : 변경 감지
 
-        Recruit recruit = recruitRepository.findById(recruitViewDto.recruitId())
+        Recruit recruit = jpaRecruitRepository.findById(recruitViewDto.recruitId())
                 .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         recruit.modifyRecruit(recruitViewDto);
         //  recruitRepository.save(recruit); // why done right? : 변경 감지
@@ -115,11 +118,11 @@ public class RecruitService {
 
     @Transactional
     public Long deleteRecruit(Long recruitId) {
-        Recruit recruit = recruitRepository.findById(recruitId)
+        Recruit recruit = jpaRecruitRepository.findById(recruitId)
                 .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
         Company company = companyRepository.findById(recruit.getCompany().getId())
                 .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
-        recruitRepository.delete(recruit);
+        jpaRecruitRepository.delete(recruit);
         companyRepository.delete(company);
         return 1L;
     }
