@@ -207,7 +207,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests> <!-- false : 테스트를 반드시 실행 -->
+                    <skipTests>false</skipTests> <!-- false : 테스트를 반드시 실행 -->
                 </configuration>
             </plugin>
             <plugin>

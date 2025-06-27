@@ -63,10 +63,12 @@ public class BoardService {
     }
 
     @Transactional
-    public Long deleteBoard(Long boardId, UserInfoDto loginUserInfo) {
+    public Long deleteBoard(Long boardId, UserInfoDto loginUserInfo) throws CommonBizException {
         Board target = Optional.ofNullable(boardRepository.find(boardId))
                 .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND));
-        validateUserEditable(target.getWriter().getWriterId(), loginUserInfo);
+        if (!isEditableUser(target.getWriter().getWriterId(), loginUserInfo)) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
+        };
         boardRepository.delete(target.getBoardId());
         return 1L;
     }
@@ -85,20 +87,20 @@ public class BoardService {
     }
 
     @Transactional
-    public Long deleteComment(Long boardId, Long commentId, UserInfoDto loginUserInfo) {
+    public Long deleteComment(Long boardId, Long commentId, UserInfoDto loginUserInfo) throws CommonBizException {
         Comment comment = Optional.ofNullable(boardRepository.findComment(boardId, commentId))
                 .orElseThrow(() ->
                         new CommonBizException(CommonBizExceptionCode.DATA_NOT_FOUND)
                 );
-
-        validateUserEditable(comment.getWriter().getWriterId(), loginUserInfo);
+        if (!isEditableUser(comment.getWriter().getWriterId(), loginUserInfo)) {
+            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
+        };
         boardRepository.deleteComment(boardId, commentId);
         return 1L;
     }
 
-    private void validateUserEditable(Long writerId, UserInfoDto loginUserInfo) {
-        if (!(writerId.equals(loginUserInfo.userId()) || !loginUserInfo.hasAdminRole())) {
-            throw new CommonBizException(CommonBizExceptionCode.ACCESS_NOT_ALLOWED);
-        }
+    private boolean isEditableUser(Long writerId, UserInfoDto loginUserInfo) {
+        return writerId.equals(loginUserInfo.userId()) || loginUserInfo.hasAdminRole();
+
     }
 }
