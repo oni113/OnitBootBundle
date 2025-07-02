@@ -1,11 +1,13 @@
 package net.nonworkspace.demo.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.nonworkspace.demo.domain.entity.Member;
 import net.nonworkspace.demo.domain.entity.Password;
+import net.nonworkspace.demo.domain.entity.QMember;
 import net.nonworkspace.demo.domain.entity.Role;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Repository;
 public class MemberRepository {
 
     private final EntityManager em;
+
+    private final JPAQueryFactory queryFactory;
 
     public Long saveMember(Member member) {
         em.persist(member);
@@ -38,12 +42,31 @@ public class MemberRepository {
         return result;
     }
 
+    public List<Member> findAllQuery() {
+        QMember member = QMember.member;
+
+        return queryFactory
+                .selectFrom(member)
+                .orderBy(member.memberId.asc())
+                .fetch();
+    }
+
     public List<Member> findAll(String name) {
         String query = "select m from Member m where name like CONCAT('%', :name, '%') order by m.memberId asc";
         List<Member> result = em.createQuery(query, Member.class).setParameter("name", name)
             .getResultList();
 
         return result;
+    }
+
+    public List<Member> findAllQuery(String name) {
+        QMember member = QMember.member;
+
+        return queryFactory
+                .selectFrom(member)
+                .where(member.name.contains(name))
+                .orderBy(member.memberId.asc())
+                .fetch();
     }
 
     public List<Member> findAll(String name, Pageable pageable) {

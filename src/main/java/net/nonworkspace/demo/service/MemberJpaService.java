@@ -1,16 +1,13 @@
 package net.nonworkspace.demo.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.nonworkspace.demo.domain.dto.common.ListResponse;
-import net.nonworkspace.demo.domain.entity.Member;
-import net.nonworkspace.demo.domain.entity.Password;
-import net.nonworkspace.demo.domain.entity.Role;
 import net.nonworkspace.demo.domain.dto.member.MemberDto;
 import net.nonworkspace.demo.domain.dto.member.MemberViewDto;
 import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
+import net.nonworkspace.demo.domain.entity.Member;
+import net.nonworkspace.demo.domain.entity.Password;
+import net.nonworkspace.demo.domain.entity.Role;
 import net.nonworkspace.demo.exception.common.CommonBizException;
 import net.nonworkspace.demo.exception.common.CommonBizExceptionCode;
 import net.nonworkspace.demo.repository.MemberRepository;
@@ -22,6 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -32,8 +33,8 @@ public class MemberJpaService {
     private final BCryptPasswordEncoder encoder;
 
     public ListResponse<MemberDto> findMembers(String name) {
-        List<Member> members = (name == null || name.isEmpty()) ? memberRepository.findAll()
-                : memberRepository.findAll(name);
+        List<Member> members = (name == null || name.isEmpty()) ? memberRepository.findAllQuery()
+                : memberRepository.findAllQuery(name);
         List<MemberDto> result = new ArrayList<>();
         members.forEach(m -> result.add(new MemberDto(m)));
         return new ListResponse<>(result);
@@ -41,7 +42,7 @@ public class MemberJpaService {
 
     public MemberViewDto findMember(Long memberId) {
         Member member = Optional.ofNullable(memberRepository.find(memberId))
-            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         return new MemberViewDto(member);
     }
 
@@ -72,7 +73,7 @@ public class MemberJpaService {
     @Transactional
     public MemberViewDto editMember(MemberViewDto member) {
         Member target = Optional.ofNullable(memberRepository.find(member.memberId()))
-            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         target.updateName(member.name());
         // memberRepository.saveMember(target); // 변경 감지
         return new MemberViewDto(target);
@@ -81,7 +82,7 @@ public class MemberJpaService {
     @Transactional
     public Long deleteMember(Long memberId) {
         Member target = Optional.ofNullable(memberRepository.find(memberId))
-            .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER));
         memberRepository.delete(target.getMemberId());
         return 1L;
     }
