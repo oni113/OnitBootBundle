@@ -1,6 +1,6 @@
 package net.nonworkspace.demo.service;
 
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import net.nonworkspace.demo.domain.dto.user.JoinRequestDto;
@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -49,13 +51,13 @@ class QueryDslTest {
         );
         memberJpaService.join(member2);
 
-        JPAQuery<Member> query = new JPAQuery<>(em);
+        JPAQueryFactory query = new JPAQueryFactory(em);
         QMember qMember = QMember.member;
 
         List<Member> memberList = query
-                .from(qMember)
+                .selectFrom(qMember)
                 .where(qMember.email.like("%test%"))
-                .orderBy(qMember.createInfo.createDate.desc())
+                .orderBy(qMember.name.asc())
                 .fetch();
 
         log.debug("memberList : " + memberList.toString());
@@ -66,5 +68,9 @@ class QueryDslTest {
             log.debug("Product email : " + member.getEmail());
             log.debug("----------------");
         }
+
+        assertThat(memberList.size()).isEqualTo(2);
+        assertThat(memberList.get(0).getName()).isEqualTo(member1.name());
+        assertThat(memberList.get(1).getEmail()).isEqualTo(member2.email());
     }
 }
