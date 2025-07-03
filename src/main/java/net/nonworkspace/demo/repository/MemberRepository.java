@@ -5,10 +5,7 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import net.nonworkspace.demo.domain.entity.Member;
-import net.nonworkspace.demo.domain.entity.Password;
-import net.nonworkspace.demo.domain.entity.QMember;
-import net.nonworkspace.demo.domain.entity.Role;
+import net.nonworkspace.demo.domain.entity.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -33,6 +30,15 @@ public class MemberRepository {
 
     public Member find(Long memberId) {
         return em.find(Member.class, memberId);
+    }
+
+    public Member findOneQuery(Long memberId) {
+        QMember member = QMember.member;
+
+        return queryFactory
+                .selectFrom(member)
+                .where(member.memberId.eq(memberId))
+                .fetchOne();
     }
 
     public List<Member> findAll() {
@@ -124,6 +130,15 @@ public class MemberRepository {
         return result;
     }
 
+    public List<Password> findQueryPasswordByMemberId(Long memberId) {
+        QPassword password = QPassword.password;
+
+        return queryFactory
+                .selectFrom(password)
+                .where(password.member.memberId.eq(memberId))
+                .fetch();
+    }
+
     public List<Role> findRoleByMemberId(Long memberId) {
         List<Role> result = em.createQuery(
                 "select r from Role r where r.member.memberId = :memberId", Role.class)
@@ -131,10 +146,18 @@ public class MemberRepository {
         return result;
     }
 
+    public List<Role> findQueryRoleByMemberId(Long memberId) {
+        QRole role = QRole.role;
+        return queryFactory
+                .selectFrom(role)
+                .where(role.member.memberId.eq(memberId))
+                .fetch();
+    }
+
     private static String createSortQuery(Pageable pageable) {
         String sortQuery = "";
         Sort sort = pageable.getSort();
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         if (sort.isSorted()) {
             builder.append(" order by ");
             sort.forEach(s ->

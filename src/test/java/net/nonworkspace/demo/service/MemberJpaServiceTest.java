@@ -146,9 +146,9 @@ public class MemberJpaServiceTest {
 
         // then
         assertEquals(newMemberId, lastMemberId, "등록한 회원 ID 값과 조회한 회원 ID 값이 일치해야 한다.");
-        assertThat(memberRepository.findPasswordByMemberId(newMemberId).size()).as(
+        assertThat(memberRepository.findQueryPasswordByMemberId(newMemberId).size()).as(
             "등록한 회원의 패스워드 데이터가 1건이어야 한다.").isEqualTo(1);
-        assertThat(memberRepository.findRoleByMemberId(newMemberId).get(0).getRoleName()).as(
+        assertThat(memberRepository.findQueryRoleByMemberId(newMemberId).get(0).getRoleName()).as(
             "등록한 회원의  ROLE 값이 \"USER\"와 일치해야 한다.").isEqualTo("USER");
     }
 
@@ -213,9 +213,9 @@ public class MemberJpaServiceTest {
         assertThat(e.getMessage())
             .isEqualTo(
                 new CommonBizException(CommonBizExceptionCode.NOT_EXIST_MEMBER).getMessage());
-        assertThat(memberRepository.findPasswordByMemberId(memberId).size()).as(
+        assertThat(memberRepository.findQueryPasswordByMemberId(memberId).size()).as(
             "삭제된 회원의 패스워드 데이터를 조회한 결과가 0 건이어야 한다").isEqualTo(0);
-        assertThat(memberRepository.findRoleByMemberId(memberId).size()).as(
+        assertThat(memberRepository.findQueryRoleByMemberId(memberId).size()).as(
             "삭제된 회원의 권한 데이터를 조회한 결과가 0 건이어야 한다").isEqualTo(0);
     }
 
