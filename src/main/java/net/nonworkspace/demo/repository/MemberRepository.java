@@ -1,14 +1,18 @@
 package net.nonworkspace.demo.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import net.nonworkspace.demo.domain.entity.*;
+import net.nonworkspace.demo.utils.QuerydslUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,7 +64,7 @@ public class MemberRepository {
     public List<Member> findAll(String name) {
         String query = "select m from Member m where name like CONCAT('%', :name, '%') order by m.memberId asc";
         List<Member> result = em.createQuery(query, Member.class).setParameter("name", name)
-            .getResultList();
+                .getResultList();
 
         return result;
     }
@@ -82,39 +86,57 @@ public class MemberRepository {
         // solve sort
         String sortQuery = createSortQuery(pageable);
         String query =
-            "select m from Member m " + (!sortQuery.isEmpty() ? sortQuery : "");
+                "select m from Member m " + (!sortQuery.isEmpty() ? sortQuery : "");
 
         if (name != null && !name.isEmpty()) {
             query = "select m from Member m where m.name like CONCAT('%', :name, '%') " + (
-                !sortQuery.isEmpty() ? sortQuery : "");
+                    !sortQuery.isEmpty() ? sortQuery : "");
             result = em.createQuery(query, Member.class)
-                .setParameter("name", name)
-                .setFirstResult(firstResult)
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+                    .setParameter("name", name)
+                    .setFirstResult(firstResult)
+                    .setMaxResults(pageable.getPageSize())
+                    .getResultList();
         } else {
             result = em.createQuery(query, Member.class)
-                .setFirstResult(firstResult)
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+                    .setFirstResult(firstResult)
+                    .setMaxResults(pageable.getPageSize())
+                    .getResultList();
         }
         return result;
     }
 
+    public List<Member> findAllPageQuery(String name, Pageable pageable) {
+        int firstResult = pageable.getPageNumber() * pageable.getPageSize();
+
+        // solve sort
+        QMember member = QMember.member;
+        PathBuilder<?> pathBuilder = new PathBuilder<>(Member.class, member.getMetadata());
+        OrderSpecifier<?>[] orderSpecifiers = QuerydslUtil.toOrderSpecifiers(pageable.getSort(), pathBuilder);
+
+        return queryFactory
+                .select(member)
+                .from(member)
+                .where((name != null && !name.isEmpty()) ? member.name.contains(name) : null)
+                .offset(firstResult)
+                .limit(pageable.getPageSize())
+                .orderBy(orderSpecifiers)
+                .fetch();
+    }
+
     public Optional<Member> findByEmail(String email) {
         List<Member> result = em.createQuery("select m from Member m where email = :email",
-                Member.class)
-            .setParameter("email", email).getResultList();
+                        Member.class)
+                .setParameter("email", email).getResultList();
         return result.stream().findAny();
     }
 
     public void delete(Long memberId) {
         Member member = em.find(Member.class, memberId);
         em.createQuery(
-                "delete from Password p where p.member.memberId = :memberId")
-            .setParameter("memberId", memberId).executeUpdate();
+                        "delete from Password p where p.member.memberId = :memberId")
+                .setParameter("memberId", memberId).executeUpdate();
         em.createQuery("delete from Role r where r.member.memberId = :memberId")
-            .setParameter("memberId", memberId).executeUpdate();
+                .setParameter("memberId", memberId).executeUpdate();
         em.remove(member);
     }
 
@@ -125,8 +147,8 @@ public class MemberRepository {
 
     public List<Password> findPasswordByMemberId(Long memberId) {
         List<Password> result = em.createQuery(
-                "select p from Password p where p.member.memberId = :memberId", Password.class)
-            .setParameter("memberId", memberId).getResultList();
+                        "select p from Password p where p.member.memberId = :memberId", Password.class)
+                .setParameter("memberId", memberId).getResultList();
         return result;
     }
 
@@ -141,8 +163,8 @@ public class MemberRepository {
 
     public List<Role> findRoleByMemberId(Long memberId) {
         List<Role> result = em.createQuery(
-                "select r from Role r where r.member.memberId = :memberId", Role.class)
-            .setParameter("memberId", memberId).getResultList();
+                        "select r from Role r where r.member.memberId = :memberId", Role.class)
+                .setParameter("memberId", memberId).getResultList();
         return result;
     }
 
@@ -161,11 +183,11 @@ public class MemberRepository {
         if (sort.isSorted()) {
             builder.append(" order by ");
             sort.forEach(s ->
-                builder.append("m.")
-                    .append(s.getProperty())
-                    .append(" ")
-                    .append(s.getDirection().name())
-                    .append(" ,")
+                    builder.append("m.")
+                            .append(s.getProperty())
+                            .append(" ")
+                            .append(s.getDirection().name())
+                            .append(" ,")
             );
             sortQuery = builder.substring(0, builder.length() - 2); // remove last comma
         }

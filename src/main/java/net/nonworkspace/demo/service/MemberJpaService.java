@@ -90,7 +90,7 @@ public class MemberJpaService {
     public ListResponse<MemberDto> getPage(String name, int pageNo, int pageSize) {
         Sort sort = Sort.by("createInfo.createDate").descending();
         Pageable pageable = PageRequest.of((pageNo - 1), pageSize, sort);   // pageNo : zero-based
-        List<Member> members = memberRepository.findAll(name, pageable);
+        List<Member> members = memberRepository.findAllPageQuery(name, pageable);
         List<MemberDto> result = new ArrayList<>();
         members.forEach(m -> result.add(new MemberDto(m)));
         return new ListResponse<>(result);
